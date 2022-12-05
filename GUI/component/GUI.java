@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.JMenuBar;
@@ -17,13 +18,19 @@ import java.awt.event.ActionEvent;
 import javax.swing.Action;
 import javax.swing.JPopupMenu;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
 import javax.swing.JFileChooser;
+import javax.swing.UIManager;
 
 public class GUI extends JFrame {
 	private final Action focalSum = new SwingAction();
 	private final Action action = new OpenRaster();
+
 
 
 	/**
@@ -35,6 +42,7 @@ public class GUI extends JFrame {
 				try {
 					GUI frame = new GUI();
 					frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -71,6 +79,10 @@ public class GUI extends JFrame {
 		JButton btnNewButton = new JButton("Focal Sum");
 		btnNewButton.setAction(focalSum);
 		toolBar.add(btnNewButton);
+		
+		JPanel displayPanel = new JPanel();
+		displayPanel.setBackground(UIManager.getColor("Button.light"));
+		getContentPane().add(displayPanel, BorderLayout.CENTER);
 	}
 
 	private class SwingAction extends AbstractAction {
@@ -85,12 +97,45 @@ public class GUI extends JFrame {
 	
 
 	private class OpenRaster extends AbstractAction {
+		private String fileName; 
+		
 		public OpenRaster() {
 			putValue(NAME, "Open raster ...");
-			putValue(SHORT_DESCRIPTION, "Open ASCII rster file");
+			putValue(SHORT_DESCRIPTION, "Open ASCII raster file");
 		}
 		public void actionPerformed(ActionEvent e) {
-			SelectFile.FileScreen();
+			JFileChooser fileSelect = new JFileChooser();
+			fileSelect.setAcceptAllFileFilterUsed(false);
+			
+			FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("ASCII Raster Files (.txt)","txt"); 
+			fileSelect.addChoosableFileFilter(fileFilter);
+			
+			int r = fileSelect.showDialog(null,"Select a file"); 
+			if(r==JFileChooser.APPROVE_OPTION) {
+				File selectedFile = fileSelect.getSelectedFile(); 
+				String filePath = selectedFile.getAbsolutePath(); 
+				Layer raster = new Layer("Layer 1",filePath); 
+				greyScale("Test", 2,raster);
+				
+				
+			}
+			//SelectFile fileSelection = new SelectFile();
+			//fileSelection.FileScreen();
+			//fileName = fileSelection.fileName;  
+			
 		}
+	}
+	
+	//VISUALIZATION FUNCTIONS 
+	//Visualize greyscale
+	public void greyScale(String title ,double dScale, Layer input){
+		int scale = (int)Math.round(dScale);
+		BufferedImage image = input.toImage();
+		MapPanel map  = new MapPanel(image,scale);
+		map.setBackground(UIManager.getColor("Button.light"));
+		getContentPane().add(map, BorderLayout.CENTER);
+
+		this.setVisible(true);
+		
 	}
 }
