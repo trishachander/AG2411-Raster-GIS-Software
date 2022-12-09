@@ -41,12 +41,23 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import java.awt.Toolkit;
+import javax.swing.JSpinner;
+import javax.swing.JRadioButton;
+import java.awt.Canvas;
+import javax.swing.JScrollBar;
+import java.awt.Cursor;
+import javax.swing.JOptionPane;
+import java.awt.event.ActionListener;
 
 public class UI extends JFrame {
+	private int currentZoom; 
 	private JPanel view; 
+	private JPanel rasterView; 
 	private final Action action = new OpenRaster();
 	private JPanel contentPane;
 	private rasterGIS rg; 
+	//private final Action action_zoomIn = new ZoomIn();
+	private final Action action_zoomOut = new ZoomOut();
 
 	/**
 	 * Launch the application.
@@ -73,76 +84,164 @@ public class UI extends JFrame {
 		//
 		rg = new rasterGIS();
 		
-		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\milton\\Downloads\\worldwide.png"));
+		//
+		// INITIALIZE WINDOW 
+		// 
+		//setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\milton\\Downloads\\worldwide.png"));
 		setTitle("rasterGIS");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 774, 531);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.BLACK);
 		contentPane.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-
+		
+		// SET CONTENT PANE
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
-		JPanel panel = new JPanel();
-		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel.setBackground(Color.WHITE);
-		contentPane.add(panel, BorderLayout.WEST);
-		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		JPanel tocPanel = new JPanel();
+		tocPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		tocPanel.setBackground(Color.WHITE);
+		contentPane.add(tocPanel, BorderLayout.WEST);
+		tocPanel.setLayout(new BorderLayout(0, 0));
 		
-		JLabel lblNewLabel = new JLabel("Content View ");
-		lblNewLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		panel.add(lblNewLabel);
+		JLabel lblTableOfContents = new JLabel("Table Of Contents ");
+		lblTableOfContents.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		tocPanel.add(lblTableOfContents, BorderLayout.NORTH);
 		
 		view = new JPanel();
 		view.setBorder(new LineBorder(new Color(0, 0, 0)));
-		view.setBackground(new Color(255, 128, 64));
+		view.setBackground(new Color(255, 255, 255));
 		contentPane.add(view, BorderLayout.CENTER);
-		view.setLayout(new CardLayout(0, 0));
+		GridBagLayout gbl_view = new GridBagLayout();
+		gbl_view.columnWidths = new int[]{0, 0, 0};
+		gbl_view.rowHeights = new int[]{0, 0, 0};
+		gbl_view.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
+		gbl_view.rowWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
+		view.setLayout(gbl_view);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(Color.WHITE);
-		panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
-		contentPane.add(panel_1, BorderLayout.EAST);
-		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		rasterView = new JPanel();
+		rasterView.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+		rasterView.setBorder(new LineBorder(new Color(0, 0, 0)));
+		GridBagConstraints gbc_rasterView = new GridBagConstraints();
+		gbc_rasterView.fill = GridBagConstraints.BOTH;
+		gbc_rasterView.insets = new Insets(0, 0, 5, 5);
+		gbc_rasterView.gridx = 0;
+		gbc_rasterView.gridy = 0;
+		view.add(rasterView, gbc_rasterView);
+		rasterView.setLayout(new BorderLayout(0, 0));
 		
-		JLabel lblNewLabel_1 = new JLabel("Operation History");
-		lblNewLabel_1.setFont(new Font("Leelawadee UI", Font.BOLD, 12));
-		panel_1.add(lblNewLabel_1);
+		JScrollBar scrollBarVertical = new JScrollBar();
+		scrollBarVertical.setBackground(new Color(255, 255, 255));
+		scrollBarVertical.setValue(50);
+		scrollBarVertical.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		scrollBarVertical.setUnitIncrement(10);
+		GridBagConstraints gbc_scrollBarVertical = new GridBagConstraints();
+		gbc_scrollBarVertical.insets = new Insets(0, 0, 5, 0);
+		gbc_scrollBarVertical.fill = GridBagConstraints.BOTH;
+		gbc_scrollBarVertical.gridx = 1;
+		gbc_scrollBarVertical.gridy = 0;
+		view.add(scrollBarVertical, gbc_scrollBarVertical);
 		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_2.setBackground(Color.WHITE);
-		contentPane.add(panel_2, BorderLayout.NORTH);
+		JScrollBar scrollBarHorizontal = new JScrollBar();
+		scrollBarHorizontal.setBackground(new Color(255, 255, 255));
+		scrollBarHorizontal.setValue(50);
+		scrollBarHorizontal.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		scrollBarHorizontal.setOrientation(JScrollBar.HORIZONTAL);
+		GridBagConstraints gbc_scrollBarHorizontal = new GridBagConstraints();
+		gbc_scrollBarHorizontal.fill = GridBagConstraints.HORIZONTAL;
+		gbc_scrollBarHorizontal.insets = new Insets(0, 0, 0, 5);
+		gbc_scrollBarHorizontal.gridx = 0;
+		gbc_scrollBarHorizontal.gridy = 1;
+		view.add(scrollBarHorizontal, gbc_scrollBarHorizontal);
 		
-		JLabel lblNewLabel_2 = new JLabel("Zoom");
-		lblNewLabel_2.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		panel_2.add(lblNewLabel_2);
+		JPanel historyPanel = new JPanel();
+		historyPanel.setBackground(Color.WHITE);
+		historyPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		contentPane.add(historyPanel, BorderLayout.EAST);
+		historyPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		JLabel lblHistory = new JLabel("Operation History");
+		lblHistory.setFont(new Font("Leelawadee UI", Font.BOLD, 12));
+		historyPanel.add(lblHistory);
+		
+		JPanel operationPanel = new JPanel();
+		operationPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		operationPanel.setBackground(Color.WHITE);
+		contentPane.add(operationPanel, BorderLayout.NORTH);
+		
+		JLabel lblZoom = new JLabel("Zoom");
+		lblZoom.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		operationPanel.add(lblZoom);
 		
 		JButton btnZoomIn = new JButton("+");
+		btnZoomIn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(rg.layerList.size()>0) {
+					currentZoom+=1; 
+					greyScale(rg.layerList.get(0),currentZoom);
+					System.out.println(rg.layerList.size()); 
+				}
+				else {
+					System.out.println("Error: You can not zoom as you have no layers");
+				}
+			}
+		});
+		//btnZoomIn.setAction(action_zoomIn);
 		btnZoomIn.setFont(new Font("SimSun", Font.PLAIN, 13));
-		panel_2.add(btnZoomIn);
+		operationPanel.add(btnZoomIn);
 		
 		JButton btnZoomOut = new JButton("-");
+		btnZoomOut.setAction(action_zoomOut);
 		btnZoomOut.setFont(new Font("SimSun", Font.PLAIN, 13));
-		panel_2.add(btnZoomOut);
+		operationPanel.add(btnZoomOut);
 		
-		JLabel lblNewLabel_3 = new JLabel("Map Algebra");
-		lblNewLabel_3.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		panel_2.add(lblNewLabel_3);
+		JLabel lblMapAlgebra = new JLabel("Map Algebra");
+		lblMapAlgebra.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		operationPanel.add(lblMapAlgebra);
 		
-		JButton btnNewButton = new JButton("Focal");
-		panel_2.add(btnNewButton);
+		JButton btnFocal = new JButton("Focal");
+		btnFocal.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		operationPanel.add(btnFocal);
 		
-		JButton btnNewButton_1 = new JButton("Local");
-		panel_2.add(btnNewButton_1);
+		JButton btnLocal = new JButton("Local");
+		operationPanel.add(btnLocal);
 		
-		JButton btnNewButton_2 = new JButton("Zonal");
-		panel_2.add(btnNewButton_2);
+		JButton btnZonal = new JButton("Zonal");
+		operationPanel.add(btnZonal);
 		
-		JPanel panel_3 = new JPanel();
-		panel_3.setBorder(new LineBorder(new Color(0, 0, 0)));
-		contentPane.add(panel_3, BorderLayout.SOUTH);
+		JPanel interactivePanel = new JPanel();
+		interactivePanel.setBackground(new Color(204, 204, 204));
+		interactivePanel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		contentPane.add(interactivePanel, BorderLayout.SOUTH);
+		
+		JLabel lblColorSettings = new JLabel("Color Settings");
+		lblColorSettings.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		
+		JLabel lblNewLabel_5 = new JLabel("Cell Value");
+		GroupLayout gl_interactivePanel = new GroupLayout(interactivePanel);
+		gl_interactivePanel.setHorizontalGroup(
+			gl_interactivePanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_interactivePanel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblColorSettings)
+					.addGap(296)
+					.addComponent(lblNewLabel_5, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
+					.addGap(276))
+		);
+		gl_interactivePanel.setVerticalGroup(
+			gl_interactivePanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_interactivePanel.createSequentialGroup()
+					.addGap(2)
+					.addGroup(gl_interactivePanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblNewLabel_5)
+						.addComponent(lblColorSettings))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		);
+		interactivePanel.setLayout(gl_interactivePanel);
 		
 		//
 		// MENU ITEMS 
@@ -190,6 +289,7 @@ public class UI extends JFrame {
 				
 				int r = fileSelect.showDialog(null,"Select a file"); 
 				if(r==JFileChooser.APPROVE_OPTION) {
+					
 					File selectedFile = fileSelect.getSelectedFile(); 
 					String filePath = selectedFile.getAbsolutePath(); 
 					Layer raster = new Layer("Layer 1",filePath); 
@@ -214,9 +314,34 @@ public class UI extends JFrame {
 			MapPanel map  = new MapPanel(image,scale);
 			map.setBackground(UIManager.getColor("Button.light"));
 			//this.getContentPane().remove();
-			view.removeAll();
-			view.add(map);
-			this.setVisible(true);
+			//rasterView.remove(map);
+			rasterView.add(map);
+			map.revalidate();
+			map.repaint();
 			
 		}
+	//private class ZoomIn extends AbstractAction {
+	//	public ZoomIn() {
+	//		putValue(NAME, "+");
+	//		putValue(SHORT_DESCRIPTION, "Zoom in");
+	//	}
+	//	public void actionPerformed(ActionEvent e) {
+
+	//	}
+	//}
+	private class ZoomOut extends AbstractAction {
+		public ZoomOut() {
+			putValue(NAME, "-");
+			putValue(SHORT_DESCRIPTION, "Zoom out");
+		}
+		public void actionPerformed(ActionEvent e) {
+			if(rg.layerList.size()>0) {
+				currentZoom-=1; 
+				greyScale(rg.layerList.get(0),currentZoom);
+			}
+			else {
+				System.out.println("Error: You can not zoom as you have no layers");
+			}
+		}
+	}
 }
