@@ -55,6 +55,10 @@ import java.awt.event.ActionListener;
 import javax.swing.JToggleButton;
 import javax.swing.JTable;
 import java.awt.Dimension;
+import javax.swing.JPopupMenu;
+import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class UI extends JFrame {
 	private int currentZoom=1; 
@@ -75,6 +79,7 @@ public class UI extends JFrame {
 	private JTextField txtFR;
 	private JTextField txtFG;
 	private JTextField txtFB;
+	private static UI frame; 
 
 	/**
 	 * Launch the application.
@@ -83,7 +88,7 @@ public class UI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UI frame = new UI();
+					frame = new UI();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -243,6 +248,16 @@ public class UI extends JFrame {
 		operationPanel.add(btnFocal);
 		
 		JButton btnLocal = new JButton("Local");
+		btnLocal.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+					LocalOperations lo = new LocalOperations();
+					frame.setEnabled(false); 
+					lo.setVisible(true);
+					
+					
+				}
+			}
+		);
 		operationPanel.add(btnLocal);
 		
 		JButton btnZonal = new JButton("Zonal");
@@ -255,9 +270,9 @@ public class UI extends JFrame {
 		contentPane.add(interactivePanel, BorderLayout.SOUTH);
 		GridBagLayout gbl_interactivePanel = new GridBagLayout();
 		gbl_interactivePanel.columnWidths = new int[]{113, 84, 96, 188, 218, 0};
-		gbl_interactivePanel.rowHeights = new int[]{24, 21, 21, 21, 0, 8, 0};
+		gbl_interactivePanel.rowHeights = new int[]{21, 21, 21, 0, 8, 0};
 		gbl_interactivePanel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_interactivePanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_interactivePanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		interactivePanel.setLayout(gbl_interactivePanel);
 		
 		JButton btnRGB = new JButton("RGB");
@@ -281,7 +296,7 @@ public class UI extends JFrame {
 		gbc_lblColorSettings.fill = GridBagConstraints.VERTICAL;
 		gbc_lblColorSettings.insets = new Insets(0, 0, 5, 5);
 		gbc_lblColorSettings.gridx = 0;
-		gbc_lblColorSettings.gridy = 1;
+		gbc_lblColorSettings.gridy = 0;
 		interactivePanel.add(lblColorSettings, gbc_lblColorSettings);
 		
 		JButton btnGreyscale = new JButton("Grey");
@@ -292,14 +307,14 @@ public class UI extends JFrame {
 		gbc_btnGreyscale.fill = GridBagConstraints.VERTICAL;
 		gbc_btnGreyscale.insets = new Insets(0, 0, 5, 5);
 		gbc_btnGreyscale.gridx = 1;
-		gbc_btnGreyscale.gridy = 1;
+		gbc_btnGreyscale.gridy = 0;
 		interactivePanel.add(btnGreyscale, gbc_btnGreyscale);
 		btnRGB.setBackground(new Color(192, 192, 192));
 		GridBagConstraints gbc_btnRGB = new GridBagConstraints();
 		gbc_btnRGB.fill = GridBagConstraints.VERTICAL;
 		gbc_btnRGB.insets = new Insets(0, 0, 5, 5);
 		gbc_btnRGB.gridx = 2;
-		gbc_btnRGB.gridy = 1;
+		gbc_btnRGB.gridy = 0;
 		interactivePanel.add(btnRGB, gbc_btnRGB);
 		
 		JLabel label = new JLabel("");
@@ -307,7 +322,7 @@ public class UI extends JFrame {
 		gbc_label.fill = GridBagConstraints.BOTH;
 		gbc_label.insets = new Insets(0, 0, 5, 5);
 		gbc_label.gridx = 3;
-		gbc_label.gridy = 1;
+		gbc_label.gridy = 0;
 		interactivePanel.add(label, gbc_label);
 		
 		JLabel lblVOIS = new JLabel("VOIS:");
@@ -316,17 +331,17 @@ public class UI extends JFrame {
 		gbc_lblVOIS.fill = GridBagConstraints.VERTICAL;
 		gbc_lblVOIS.insets = new Insets(0, 0, 5, 5);
 		gbc_lblVOIS.gridx = 0;
-		gbc_lblVOIS.gridy = 2;
+		gbc_lblVOIS.gridy = 1;
 		interactivePanel.add(lblVOIS, gbc_lblVOIS);
 		
 		txtFR = new JTextField();
 		txtFR.setToolTipText("");
 		txtFR.setColumns(10);
 		GridBagConstraints gbc_txtFR = new GridBagConstraints();
-		gbc_txtFR.fill = GridBagConstraints.BOTH;
+		gbc_txtFR.fill = GridBagConstraints.VERTICAL;
 		gbc_txtFR.insets = new Insets(0, 0, 5, 5);
 		gbc_txtFR.gridx = 1;
-		gbc_txtFR.gridy = 2;
+		gbc_txtFR.gridy = 1;
 		interactivePanel.add(txtFR, gbc_txtFR);
 		
 		JLabel label_1 = new JLabel("");
@@ -334,7 +349,7 @@ public class UI extends JFrame {
 		gbc_label_1.fill = GridBagConstraints.BOTH;
 		gbc_label_1.insets = new Insets(0, 0, 5, 5);
 		gbc_label_1.gridx = 2;
-		gbc_label_1.gridy = 2;
+		gbc_label_1.gridy = 1;
 		interactivePanel.add(label_1, gbc_label_1);
 		
 		JLabel lblTerminal = new JLabel("Terminal");
@@ -343,7 +358,7 @@ public class UI extends JFrame {
 		gbc_lblTerminal.fill = GridBagConstraints.BOTH;
 		gbc_lblTerminal.insets = new Insets(0, 0, 5, 0);
 		gbc_lblTerminal.gridx = 4;
-		gbc_lblTerminal.gridy = 2;
+		gbc_lblTerminal.gridy = 1;
 		interactivePanel.add(lblTerminal, gbc_lblTerminal);
 		
 		JLabel label_2 = new JLabel("");
@@ -351,7 +366,7 @@ public class UI extends JFrame {
 		gbc_label_2.fill = GridBagConstraints.BOTH;
 		gbc_label_2.insets = new Insets(0, 0, 5, 5);
 		gbc_label_2.gridx = 0;
-		gbc_label_2.gridy = 3;
+		gbc_label_2.gridy = 2;
 		interactivePanel.add(label_2, gbc_label_2);
 		
 		txtFG = new JTextField();
@@ -360,7 +375,7 @@ public class UI extends JFrame {
 		gbc_txtFG.fill = GridBagConstraints.BOTH;
 		gbc_txtFG.insets = new Insets(0, 0, 5, 5);
 		gbc_txtFG.gridx = 1;
-		gbc_txtFG.gridy = 3;
+		gbc_txtFG.gridy = 2;
 		interactivePanel.add(txtFG, gbc_txtFG);
 		
 		JLabel label_3 = new JLabel("");
@@ -368,7 +383,7 @@ public class UI extends JFrame {
 		gbc_label_3.fill = GridBagConstraints.BOTH;
 		gbc_label_3.insets = new Insets(0, 0, 5, 5);
 		gbc_label_3.gridx = 2;
-		gbc_label_3.gridy = 3;
+		gbc_label_3.gridy = 2;
 		interactivePanel.add(label_3, gbc_label_3);
 		
 		consoleOutput = new JTextField();
@@ -382,7 +397,7 @@ public class UI extends JFrame {
 		gbc_consoleOutput.fill = GridBagConstraints.BOTH;
 		gbc_consoleOutput.insets = new Insets(0, 0, 5, 0);
 		gbc_consoleOutput.gridx = 4;
-		gbc_consoleOutput.gridy = 3;
+		gbc_consoleOutput.gridy = 2;
 		interactivePanel.add(consoleOutput, gbc_consoleOutput);
 		
 		txtFB = new JTextField();
@@ -391,7 +406,7 @@ public class UI extends JFrame {
 		gbc_txtFB.fill = GridBagConstraints.BOTH;
 		gbc_txtFB.insets = new Insets(0, 0, 5, 5);
 		gbc_txtFB.gridx = 1;
-		gbc_txtFB.gridy = 4;
+		gbc_txtFB.gridy = 3;
 		interactivePanel.add(txtFB, gbc_txtFB);
 		
 		JLabel label_4 = new JLabel("");
@@ -399,7 +414,7 @@ public class UI extends JFrame {
 		gbc_label_4.fill = GridBagConstraints.BOTH;
 		gbc_label_4.insets = new Insets(0, 0, 0, 5);
 		gbc_label_4.gridx = 0;
-		gbc_label_4.gridy = 5;
+		gbc_label_4.gridy = 4;
 		interactivePanel.add(label_4, gbc_label_4);
 		
 		JLabel label_5 = new JLabel("");
@@ -407,7 +422,7 @@ public class UI extends JFrame {
 		gbc_label_5.fill = GridBagConstraints.BOTH;
 		gbc_label_5.insets = new Insets(0, 0, 0, 5);
 		gbc_label_5.gridx = 2;
-		gbc_label_5.gridy = 5;
+		gbc_label_5.gridy = 4;
 		interactivePanel.add(label_5, gbc_label_5);
 		
 		JLabel label_6 = new JLabel("");
@@ -415,7 +430,7 @@ public class UI extends JFrame {
 		gbc_label_6.insets = new Insets(0, 0, 0, 5);
 		gbc_label_6.fill = GridBagConstraints.BOTH;
 		gbc_label_6.gridx = 3;
-		gbc_label_6.gridy = 5;
+		gbc_label_6.gridy = 4;
 		interactivePanel.add(label_6, gbc_label_6);
 		
 		//
@@ -541,5 +556,26 @@ public class UI extends JFrame {
 				}
 			}
 			return null;
+		}
+		
+		private Layer loadRaster() {
+			JFileChooser fileSelect = new JFileChooser(); //Create a new file chooser 
+			fileSelect.setAcceptAllFileFilterUsed(false); //Set accept all file types to false
+			
+			//Create and apply an extension filter as to only accept txt files 
+			FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("ASCII Raster Files (.txt)","txt"); 
+			fileSelect.addChoosableFileFilter(fileFilter);
+			
+			int r = fileSelect.showDialog(null,"Select a file"); 
+			if(r==JFileChooser.APPROVE_OPTION) {
+				
+				File selectedFile = fileSelect.getSelectedFile(); 
+				String filePath = selectedFile.getAbsolutePath(); 
+				String name = selectedFile.getName(); 
+				Layer raster = new Layer(name,filePath); 
+				return raster;
+			}else {
+				return null;
+			}
 		}
 }

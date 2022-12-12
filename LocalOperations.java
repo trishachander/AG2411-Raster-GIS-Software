@@ -1,0 +1,183 @@
+package components;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import java.awt.GridBagLayout;
+import javax.swing.JLabel;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.Font;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.awt.event.ActionEvent;
+import javax.swing.JToggleButton;
+
+public class LocalOperations extends JFrame {
+
+	private JPanel contentPane;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					LocalOperations frame = new LocalOperations();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public LocalOperations() {
+		setResizable(false);
+		setTitle("Local Operation");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		GridBagLayout gbl_contentPane = new GridBagLayout();
+		gbl_contentPane.columnWidths = new int[]{232, 188, 0};
+		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 0};
+		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		contentPane.setLayout(gbl_contentPane);
+		
+		JLabel lblRaster1 = new JLabel("Select raster 1 : ");
+		lblRaster1.setFont(new Font("Tahoma", Font.BOLD, 12));
+		GridBagConstraints gbc_lblRaster1 = new GridBagConstraints();
+		gbc_lblRaster1.insets = new Insets(0, 0, 5, 5);
+		gbc_lblRaster1.fill = GridBagConstraints.VERTICAL;
+		gbc_lblRaster1.gridx = 0;
+		gbc_lblRaster1.gridy = 0;
+		contentPane.add(lblRaster1, gbc_lblRaster1);
+		
+		JButton btnOpenR1 = new JButton("Open file ...");
+		btnOpenR1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileSelect = new JFileChooser(); //Create a new file chooser 
+				fileSelect.setAcceptAllFileFilterUsed(false); //Set accept all file types to false
+				
+				//Create and apply an extension filter as to only accept txt files 
+				FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("ASCII Raster Files (.txt)","txt"); 
+				fileSelect.addChoosableFileFilter(fileFilter);
+				
+				int r = fileSelect.showDialog(null,"Select a file"); 
+				if(r==JFileChooser.APPROVE_OPTION) {
+					
+					File selectedFile = fileSelect.getSelectedFile(); 
+					String filePath = selectedFile.getAbsolutePath(); 
+					String name = selectedFile.getName(); 
+					Layer raster = new Layer(name,filePath); 
+				}
+			}
+		});
+		GridBagConstraints gbc_btnOpenR1 = new GridBagConstraints();
+		gbc_btnOpenR1.insets = new Insets(0, 0, 5, 0);
+		gbc_btnOpenR1.gridx = 1;
+		gbc_btnOpenR1.gridy = 0;
+		contentPane.add(btnOpenR1, gbc_btnOpenR1);
+		
+		JLabel lblRaster2 = new JLabel("Select raster 2 : ");
+		lblRaster2.setFont(new Font("Tahoma", Font.BOLD, 12));
+		GridBagConstraints gbc_lblRaster2 = new GridBagConstraints();
+		gbc_lblRaster2.insets = new Insets(0, 0, 5, 5);
+		gbc_lblRaster2.gridx = 0;
+		gbc_lblRaster2.gridy = 2;
+		contentPane.add(lblRaster2, gbc_lblRaster2);
+		
+		JButton btnOpenR1_1 = new JButton("Open file ...");
+		GridBagConstraints gbc_btnOpenR1_1 = new GridBagConstraints();
+		gbc_btnOpenR1_1.insets = new Insets(0, 0, 5, 0);
+		gbc_btnOpenR1_1.gridx = 1;
+		gbc_btnOpenR1_1.gridy = 2;
+		contentPane.add(btnOpenR1_1, gbc_btnOpenR1_1);
+		
+		JLabel lblSelectLocalOperation = new JLabel("Select Local Operation :");
+		lblSelectLocalOperation.setFont(new Font("Tahoma", Font.BOLD, 12));
+		GridBagConstraints gbc_lblSelectLocalOperation = new GridBagConstraints();
+		gbc_lblSelectLocalOperation.insets = new Insets(0, 0, 5, 5);
+		gbc_lblSelectLocalOperation.gridx = 0;
+		gbc_lblSelectLocalOperation.gridy = 4;
+		contentPane.add(lblSelectLocalOperation, gbc_lblSelectLocalOperation);
+		
+		JToggleButton tglbtnNewToggleButton = new JToggleButton("Sum");
+		GridBagConstraints gbc_tglbtnNewToggleButton = new GridBagConstraints();
+		gbc_tglbtnNewToggleButton.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tglbtnNewToggleButton.insets = new Insets(0, 0, 5, 5);
+		gbc_tglbtnNewToggleButton.gridx = 0;
+		gbc_tglbtnNewToggleButton.gridy = 5;
+		contentPane.add(tglbtnNewToggleButton, gbc_tglbtnNewToggleButton);
+		
+		JToggleButton tglbtnMaximum = new JToggleButton("Maximum");
+		GridBagConstraints gbc_tglbtnMaximum = new GridBagConstraints();
+		gbc_tglbtnMaximum.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tglbtnMaximum.insets = new Insets(0, 0, 5, 0);
+		gbc_tglbtnMaximum.gridx = 1;
+		gbc_tglbtnMaximum.gridy = 5;
+		contentPane.add(tglbtnMaximum, gbc_tglbtnMaximum);
+		
+		JToggleButton tglbtnNewToggleButton_1_1 = new JToggleButton("Subtraction");
+		GridBagConstraints gbc_tglbtnNewToggleButton_1_1 = new GridBagConstraints();
+		gbc_tglbtnNewToggleButton_1_1.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tglbtnNewToggleButton_1_1.insets = new Insets(0, 0, 5, 5);
+		gbc_tglbtnNewToggleButton_1_1.gridx = 0;
+		gbc_tglbtnNewToggleButton_1_1.gridy = 6;
+		contentPane.add(tglbtnNewToggleButton_1_1, gbc_tglbtnNewToggleButton_1_1);
+		
+		JToggleButton tglbtnMinimum = new JToggleButton("Minimum");
+		GridBagConstraints gbc_tglbtnMinimum = new GridBagConstraints();
+		gbc_tglbtnMinimum.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tglbtnMinimum.insets = new Insets(0, 0, 5, 0);
+		gbc_tglbtnMinimum.gridx = 1;
+		gbc_tglbtnMinimum.gridy = 6;
+		contentPane.add(tglbtnMinimum, gbc_tglbtnMinimum);
+		
+		JToggleButton tglbtnNewToggleButton_1 = new JToggleButton("Product");
+		GridBagConstraints gbc_tglbtnNewToggleButton_1 = new GridBagConstraints();
+		gbc_tglbtnNewToggleButton_1.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tglbtnNewToggleButton_1.insets = new Insets(0, 0, 5, 5);
+		gbc_tglbtnNewToggleButton_1.gridx = 0;
+		gbc_tglbtnNewToggleButton_1.gridy = 7;
+		contentPane.add(tglbtnNewToggleButton_1, gbc_tglbtnNewToggleButton_1);
+		
+		JToggleButton tglbtnMean = new JToggleButton("Mean");
+		GridBagConstraints gbc_tglbtnMean = new GridBagConstraints();
+		gbc_tglbtnMean.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tglbtnMean.insets = new Insets(0, 0, 5, 0);
+		gbc_tglbtnMean.gridx = 1;
+		gbc_tglbtnMean.gridy = 7;
+		contentPane.add(tglbtnMean, gbc_tglbtnMean);
+		
+		JToggleButton tglbtnNewToggleButton_1_2 = new JToggleButton("Division");
+		GridBagConstraints gbc_tglbtnNewToggleButton_1_2 = new GridBagConstraints();
+		gbc_tglbtnNewToggleButton_1_2.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tglbtnNewToggleButton_1_2.insets = new Insets(0, 0, 5, 5);
+		gbc_tglbtnNewToggleButton_1_2.gridx = 0;
+		gbc_tglbtnNewToggleButton_1_2.gridy = 8;
+		contentPane.add(tglbtnNewToggleButton_1_2, gbc_tglbtnNewToggleButton_1_2);
+		
+		JButton btnOK = new JButton("OK");
+		GridBagConstraints gbc_btnOK = new GridBagConstraints();
+		gbc_btnOK.gridx = 1;
+		gbc_btnOK.gridy = 9;
+		contentPane.add(btnOK, gbc_btnOK);
+	}
+
+}
