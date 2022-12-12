@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Font;
+
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
@@ -117,61 +119,69 @@ public class LocalOperations extends JFrame {
 		gbc_lblSelectLocalOperation.gridy = 4;
 		contentPane.add(lblSelectLocalOperation, gbc_lblSelectLocalOperation);
 		
-		JToggleButton tglbtnNewToggleButton = new JToggleButton("Sum");
+		ButtonGroup buttonGroup = new ButtonGroup();
+		JToggleButton tbSum = new JToggleButton("Sum");
 		GridBagConstraints gbc_tglbtnNewToggleButton = new GridBagConstraints();
 		gbc_tglbtnNewToggleButton.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tglbtnNewToggleButton.insets = new Insets(0, 0, 5, 5);
 		gbc_tglbtnNewToggleButton.gridx = 0;
 		gbc_tglbtnNewToggleButton.gridy = 5;
-		contentPane.add(tglbtnNewToggleButton, gbc_tglbtnNewToggleButton);
+		buttonGroup.add(tbSum);
+		contentPane.add(tbSum, gbc_tglbtnNewToggleButton);
 		
-		JToggleButton tglbtnMaximum = new JToggleButton("Maximum");
+		JToggleButton tbMax = new JToggleButton("Maximum");
 		GridBagConstraints gbc_tglbtnMaximum = new GridBagConstraints();
 		gbc_tglbtnMaximum.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tglbtnMaximum.insets = new Insets(0, 0, 5, 0);
 		gbc_tglbtnMaximum.gridx = 1;
 		gbc_tglbtnMaximum.gridy = 5;
-		contentPane.add(tglbtnMaximum, gbc_tglbtnMaximum);
+		buttonGroup.add(tbMax);
+		contentPane.add(tbMax, gbc_tglbtnMaximum);
 		
-		JToggleButton tglbtnNewToggleButton_1_1 = new JToggleButton("Subtraction");
+		JToggleButton tbSub = new JToggleButton("Subtraction");
 		GridBagConstraints gbc_tglbtnNewToggleButton_1_1 = new GridBagConstraints();
 		gbc_tglbtnNewToggleButton_1_1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tglbtnNewToggleButton_1_1.insets = new Insets(0, 0, 5, 5);
 		gbc_tglbtnNewToggleButton_1_1.gridx = 0;
 		gbc_tglbtnNewToggleButton_1_1.gridy = 6;
-		contentPane.add(tglbtnNewToggleButton_1_1, gbc_tglbtnNewToggleButton_1_1);
+		buttonGroup.add(tbSub);
+		contentPane.add(tbSub, gbc_tglbtnNewToggleButton_1_1);
 		
-		JToggleButton tglbtnMinimum = new JToggleButton("Minimum");
+		JToggleButton tbMin = new JToggleButton("Minimum");
 		GridBagConstraints gbc_tglbtnMinimum = new GridBagConstraints();
 		gbc_tglbtnMinimum.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tglbtnMinimum.insets = new Insets(0, 0, 5, 0);
 		gbc_tglbtnMinimum.gridx = 1;
 		gbc_tglbtnMinimum.gridy = 6;
-		contentPane.add(tglbtnMinimum, gbc_tglbtnMinimum);
+		buttonGroup.add(tbMin);
+		contentPane.add(tbMin, gbc_tglbtnMinimum);
 		
-		JToggleButton tglbtnNewToggleButton_1 = new JToggleButton("Product");
+		JToggleButton tbProduct = new JToggleButton("Product");
 		GridBagConstraints gbc_tglbtnNewToggleButton_1 = new GridBagConstraints();
 		gbc_tglbtnNewToggleButton_1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tglbtnNewToggleButton_1.insets = new Insets(0, 0, 5, 5);
 		gbc_tglbtnNewToggleButton_1.gridx = 0;
 		gbc_tglbtnNewToggleButton_1.gridy = 7;
-		contentPane.add(tglbtnNewToggleButton_1, gbc_tglbtnNewToggleButton_1);
+		buttonGroup.add(tbProduct);
+		contentPane.add(tbProduct, gbc_tglbtnNewToggleButton_1);
 		
-		JToggleButton tglbtnMean = new JToggleButton("Mean");
+		JToggleButton tbMean = new JToggleButton("Mean");
 		GridBagConstraints gbc_tglbtnMean = new GridBagConstraints();
 		gbc_tglbtnMean.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tglbtnMean.insets = new Insets(0, 0, 5, 0);
 		gbc_tglbtnMean.gridx = 1;
 		gbc_tglbtnMean.gridy = 7;
-		contentPane.add(tglbtnMean, gbc_tglbtnMean);
+		buttonGroup.add(tbMean);
+		contentPane.add(tbMean, gbc_tglbtnMean);
 		
-		JToggleButton tglbtnNewToggleButton_1_2 = new JToggleButton("Division");
+		JToggleButton tbDiv = new JToggleButton("Division");
 		GridBagConstraints gbc_tglbtnNewToggleButton_1_2 = new GridBagConstraints();
 		gbc_tglbtnNewToggleButton_1_2.fill = GridBagConstraints.HORIZONTAL;
 		gbc_tglbtnNewToggleButton_1_2.insets = new Insets(0, 0, 5, 5);
 		gbc_tglbtnNewToggleButton_1_2.gridx = 0;
 		gbc_tglbtnNewToggleButton_1_2.gridy = 8;
-		contentPane.add(tglbtnNewToggleButton_1_2, gbc_tglbtnNewToggleButton_1_2);
+		buttonGroup.add(tbDiv);
+		contentPane.add(tbDiv, gbc_tglbtnNewToggleButton_1_2);
 		
 		JButton btnOK = new JButton("OK");
 		GridBagConstraints gbc_btnOK = new GridBagConstraints();
