@@ -1,0 +1,95 @@
+Local Operations in 1D. Copy to layer file that supports 1D arrays.
+
+
+
+	public Layer localSum(Layer inLayer, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
+		for (int i = 0; i < (nRows*nCols); i++) {
+			if (values[i] == nullValue || inLayer.values[i] == nullValue) {
+				outLayer.values[i] = nullValue;
+			}
+			else {
+				outLayer.values[i] = values[i] + inLayer.values[i];
+			}
+		}
+		return outLayer;
+	}
+
+	public Layer localDifference(Layer inLayer, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
+		for (int i = 0; i < (nRows*nCols); i++) {
+			if (values[i] == nullValue || inLayer.values[i] == nullValue) {
+				outLayer.values[i] = nullValue;
+			}
+			else {
+				outLayer.values[i] = values[i] - inLayer.values[i];
+			}
+		}
+		return outLayer;
+	}
+
+	public Layer localProduct(Layer inLayer, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
+		for (int i = 0; i < (nRows*nCols); i++) {
+			if (values[i] == nullValue || inLayer.values[i] == nullValue) {
+				outLayer.values[i] = nullValue;
+			}
+			else {
+				outLayer.values[i] = values[i] * inLayer.values[i];
+			}
+		}
+		return outLayer;
+	}
+
+	public Layer localRatio(Layer inLayer, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
+		for (int i = 0; i < (nRows*nCols); i++) {
+			if (values[i] == nullValue || inLayer.values[i] == nullValue) {
+				outLayer.values[i] = nullValue;
+			}
+			else {
+				outLayer.values[i] = values[i] / inLayer.values[i];
+			}
+		}
+		return outLayer;
+	}
+
+	public Layer localMinimum(Layer inLayer, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
+		for (int i = 0; i < (nRows*nCols); i++) {
+			if (values[i] == nullValue || inLayer.values[i] == nullValue) {
+				outLayer.values[i] = nullValue;
+			}
+			else {
+				outLayer.values[i] = Math.min(values[i],inLayer.values[i]);
+			}
+		}
+		return outLayer;
+	}
+	
+
+	public Layer localMaximum(Layer inLayer, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
+		for (int i = 0; i < (nRows*nCols); i++) {
+			if (values[i] == nullValue || inLayer.values[i] == nullValue) {
+				outLayer.values[i] = nullValue;
+			}
+			else {
+				outLayer.values[i] = Math.max(values[i],inLayer.values[i]);
+			}
+		}
+		return outLayer;
+	}
+
+	public Layer localMean(Layer inLayer, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
+		for (int i = 0; i < (nRows*nCols); i++) {
+			if (values[i] == nullValue || inLayer.values[i] == nullValue) {
+				outLayer.values[i] = nullValue;
+			}
+			else {
+				outLayer.values[i] = (values[i] + inLayer.values[i])/2;
+			}
+		}
+		return outLayer;
+	}
