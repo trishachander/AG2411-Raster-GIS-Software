@@ -65,6 +65,7 @@ public class UI extends JFrame {
 	private JPanel view; 
 	private JPanel rasterView; 
 	private final Action action = new OpenRaster();
+	private final Action save = new SaveRaster();
 	private JPanel contentPane;
 	private rasterGIS rg; 
 	private ButtonGroup btnGroupToc = new ButtonGroup(); 
@@ -80,6 +81,7 @@ public class UI extends JFrame {
 	private JTextField txtFG;
 	private JTextField txtFB;
 	private static UI frame; 
+	private JTextField txtCellValue;
 
 	/**
 	 * Launch the application.
@@ -111,7 +113,7 @@ public class UI extends JFrame {
 		// 
 		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\milton\\Downloads\\worldwide.png"));
 		setTitle("rasterGIS");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(UI.EXIT_ON_CLOSE);
 		setBounds(100, 100, 774, 531);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.BLACK);
@@ -151,6 +153,20 @@ public class UI extends JFrame {
 		view.setLayout(gbl_view);
 		
 		rasterView = new JPanel();
+		rasterView.addMouseListener(new MouseAdapter() {
+			//@Override
+			public void mouseClicked(MouseEvent e) {
+				int x = rasterView.getY();
+				int y = rasterView.getY();
+				Layer current = findSelected();
+				if(x>=0 && x<current.rows) {
+					if(y>=0 && y<current.columns) {
+						System.out.println(String.valueOf(current.values[x*y]));
+						txtCellValue.setText(String.valueOf(current.values[x*y]));
+					}
+				}
+			}
+		});
 //		x = rasterView.getWidth();
 //		y = rasterView.getHeight();
 		rasterView.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
@@ -223,11 +239,10 @@ public class UI extends JFrame {
 					else 
 					{
 						consoleOutput.setText("Max zoom reached");
-
 					}
-
 				}
-				else {
+				else 
+				{
 					consoleOutput.setText("No layers");
 				}
 			}
@@ -251,10 +266,9 @@ public class UI extends JFrame {
 		btnLocal.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					LocalOperations lo = new LocalOperations();
+					
 					frame.setEnabled(false); 
 					lo.setVisible(true);
-					
-					
 				}
 			}
 		);
@@ -269,9 +283,9 @@ public class UI extends JFrame {
 		interactivePanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		contentPane.add(interactivePanel, BorderLayout.SOUTH);
 		GridBagLayout gbl_interactivePanel = new GridBagLayout();
-		gbl_interactivePanel.columnWidths = new int[]{113, 84, 96, 188, 218, 0};
+		gbl_interactivePanel.columnWidths = new int[]{113, 84, 96, 103, 90, 218, 0};
 		gbl_interactivePanel.rowHeights = new int[]{21, 21, 21, 0, 8, 0};
-		gbl_interactivePanel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_interactivePanel.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_interactivePanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		interactivePanel.setLayout(gbl_interactivePanel);
 		
@@ -352,12 +366,20 @@ public class UI extends JFrame {
 		gbc_label_1.gridy = 1;
 		interactivePanel.add(label_1, gbc_label_1);
 		
+		JLabel lblCellValue = new JLabel("Cell Value:");
+		lblCellValue.setFont(new Font("Tahoma", Font.BOLD, 10));
+		GridBagConstraints gbc_lblCellValue = new GridBagConstraints();
+		gbc_lblCellValue.insets = new Insets(0, 0, 5, 5);
+		gbc_lblCellValue.gridx = 3;
+		gbc_lblCellValue.gridy = 1;
+		interactivePanel.add(lblCellValue, gbc_lblCellValue);
+		
 		JLabel lblTerminal = new JLabel("Terminal");
 		lblTerminal.setFont(new Font("Tahoma", Font.BOLD, 10));
 		GridBagConstraints gbc_lblTerminal = new GridBagConstraints();
 		gbc_lblTerminal.fill = GridBagConstraints.BOTH;
 		gbc_lblTerminal.insets = new Insets(0, 0, 5, 0);
-		gbc_lblTerminal.gridx = 4;
+		gbc_lblTerminal.gridx = 5;
 		gbc_lblTerminal.gridy = 1;
 		interactivePanel.add(lblTerminal, gbc_lblTerminal);
 		
@@ -380,11 +402,23 @@ public class UI extends JFrame {
 		
 		JLabel label_3 = new JLabel("");
 		GridBagConstraints gbc_label_3 = new GridBagConstraints();
-		gbc_label_3.fill = GridBagConstraints.BOTH;
+		gbc_label_3.anchor = GridBagConstraints.EAST;
+		gbc_label_3.fill = GridBagConstraints.VERTICAL;
 		gbc_label_3.insets = new Insets(0, 0, 5, 5);
 		gbc_label_3.gridx = 2;
 		gbc_label_3.gridy = 2;
 		interactivePanel.add(label_3, gbc_label_3);
+		
+		txtCellValue = new JTextField();
+		txtCellValue.setFont(new Font("Tahoma", Font.BOLD, 10));
+		txtCellValue.setForeground(Color.BLUE);
+		txtCellValue.setEditable(false);
+		GridBagConstraints gbc_txtCellValue = new GridBagConstraints();
+		gbc_txtCellValue.insets = new Insets(0, 0, 5, 5);
+		gbc_txtCellValue.gridx = 3;
+		gbc_txtCellValue.gridy = 2;
+		interactivePanel.add(txtCellValue, gbc_txtCellValue);
+		txtCellValue.setColumns(10);
 		
 		consoleOutput = new JTextField();
 		consoleOutput.setForeground(Color.GREEN);
@@ -396,7 +430,7 @@ public class UI extends JFrame {
 		gbc_consoleOutput.gridheight = 2;
 		gbc_consoleOutput.fill = GridBagConstraints.BOTH;
 		gbc_consoleOutput.insets = new Insets(0, 0, 5, 0);
-		gbc_consoleOutput.gridx = 4;
+		gbc_consoleOutput.gridx = 5;
 		gbc_consoleOutput.gridy = 2;
 		interactivePanel.add(consoleOutput, gbc_consoleOutput);
 		
@@ -450,8 +484,9 @@ public class UI extends JFrame {
 		openRasterMenuItem.setAction(action);
 		fileMenu.add(openRasterMenuItem);
 		
-		JMenuItem mntmNewMenuItem = new JMenuItem("Save ...");
-		fileMenu.add(mntmNewMenuItem);
+		JMenuItem mntmSave = new JMenuItem("Save ...");
+		mntmSave.setAction(save);
+		fileMenu.add(mntmSave);
 		
 		//Create "About" Menu 
 		JMenu aboutMenu = new JMenu("About");
@@ -515,6 +550,18 @@ public class UI extends JFrame {
 				//fileSelection.FileScreen();
 				//fileName = fileSelection.fileName;  
 				
+			}
+		}
+		
+		public class SaveRaster extends AbstractAction{
+			
+			public SaveRaster() {
+				putValue(NAME, "Save Raster ... "); 
+				putValue(SHORT_DESCRIPTION,"Save file"); 
+			}
+			public void actionPerformed(ActionEvent e) {
+				Layer outputSave = findSelected();
+				outputSave.save("test.txt");
 			}
 		}
 		

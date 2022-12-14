@@ -85,7 +85,8 @@ public class Layer {
 			//NO DATA
 			tt = bReader.readLine(); 
 			tt2=tt.split("\\s+");
-			nullValue =Integer.parseInt(tt2[1]); //Finds no-data value 
+			Double temp = Double.parseDouble(tt2[1]);
+			nullValue =(int)Math.round(temp); //Finds no-data value 
 			
 			//SIZE
 			size = this.rows*this.columns;
@@ -225,9 +226,9 @@ public class Layer {
 			FileWriter fWriter = new FileWriter(file);
 			fWriter.write("ncols         "+columns+"\n");
 			fWriter.write("nrows         "+rows+"\n");
-			fWriter.write("xllcorner     "+origin[0]+"\n");
-			fWriter.write("yllcorner     "+origin[1]+"\n");
-			fWriter.write("cellsize      "+cellSize+"\n");
+			fWriter.write("xllcorner     "+(int)Math.round(origin[0])+"\n");
+			fWriter.write("yllcorner     "+(int)Math.round(origin[1])+"\n");
+			fWriter.write("cellsize      "+(long)Math.round(cellSize)+"\n");
 			fWriter.write("NODATA_value  "+nullValue+"\n");
 			for(int r = 0; r < rows; r++) {
 				for(int c = 0; c < columns; c++) {
