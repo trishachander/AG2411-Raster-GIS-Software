@@ -26,18 +26,16 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Enumeration;
 import java.awt.event.ActionEvent;
-import javax.swing.JToggleButton;
-import components.UI; 
+import javax.swing.JToggleButton; 
 
 public class LocalOperations extends JFrame {
 
 	private JPanel contentPane;
-	//private static UI ui; 
 	private ButtonGroup buttonGroup;
 	private Layer raster1=null;
 	private Layer raster2=null; 
-	public Layer result;
-	static LocalOperations frame;
+	private Layer result;
+	//private LocalOperations frame;
 	
 	
 
@@ -48,8 +46,7 @@ public class LocalOperations extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					
-					frame = new LocalOperations();
+					LocalOperations frame = new LocalOperations();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -247,14 +244,15 @@ public class LocalOperations extends JFrame {
 								
 							GridBagConstraints gbc_rdbtn = new GridBagConstraints();
 							gbc_rdbtn.gridx = 0;
-							gbc_rdbtn.gridy = UI.rg.layerList.size()+1;
+							gbc_rdbtn.gridy = UI.hm.size()+1;
 							UI.btnGroupToc.add(rdbtn);
 							rdbtn.setBackground(Color.white);
 							UI.tocBar.add(rdbtn,gbc_rdbtn);
 							UI.hm.put(rdbtn, result); 
 							rdbtn.setSelected(true);
-			
+							
 						}
+						
 					}
 					else 
 					{

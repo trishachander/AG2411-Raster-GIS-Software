@@ -18,45 +18,27 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JScrollPane;
-import java.awt.CardLayout;
 import javax.swing.JLabel;
-import javax.swing.SpringLayout;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import java.awt.ComponentOrientation;
 import java.awt.Font;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import java.awt.Toolkit;
-import javax.swing.JSpinner;
 import javax.swing.JRadioButton;
-import java.awt.Canvas;
 import javax.swing.JScrollBar;
 import java.awt.Cursor;
-import javax.swing.JOptionPane;
 import java.awt.event.ActionListener;
-import javax.swing.JToggleButton;
-import javax.swing.JTable;
 import java.awt.Dimension;
-import javax.swing.JPopupMenu;
-import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelListener;
@@ -69,7 +51,6 @@ public class UI extends JFrame {
 	private final Action action = new OpenRaster();
 	private final Action save = new SaveRaster();
 	private JPanel contentPane;
-	static rasterGIS rg; 
 	static ButtonGroup btnGroupToc = new ButtonGroup(); 
 	//private final Action action_zoomIn = new ZoomIn();
 	//private final Action action_zoomOut = new ZoomOut();
@@ -81,8 +62,7 @@ public class UI extends JFrame {
 	static int y; 
 	private JTextField txtFR;
 	private JTextField txtFG;
-	private JTextField txtFB;
-	static UI uiFrame; 
+	private JTextField txtFB; 
 	private JTextField txtCellValue;
 
 	/**
@@ -92,7 +72,7 @@ public class UI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					uiFrame = new UI();
+					UI uiFrame = new UI();
 					uiFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -104,12 +84,7 @@ public class UI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public UI() {
-		//
-		// INITIALIZE LOGIC COMPONENTS
-		//
-		rg = new rasterGIS();
-		
+	public UI() {		
 		//
 		// INITIALIZE WINDOW 
 		// 
@@ -160,7 +135,7 @@ public class UI extends JFrame {
 				int scroll = e.getWheelRotation();
 				switch (scroll) {
 				case -1:
-					if(rg.layerList.size()>0) {
+					if(hm.size()>0) {
 						currentZoom+=1; 
 						greyScale(findSelected(),currentZoom);
 					}
@@ -170,7 +145,7 @@ public class UI extends JFrame {
 					break;
 				
 				case 1:
-					if(rg.layerList.size()>0) {
+					if(hm.size()>0) {
 						if(currentZoom > 1) {
 							currentZoom-=1; 
 							greyScale(findSelected(),currentZoom);
@@ -250,7 +225,7 @@ public class UI extends JFrame {
 		JButton btnZoomIn = new JButton("+");
 		btnZoomIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(rg.layerList.size()>0) {
+				if(hm.size()>0) {
 					currentZoom+=1; 
 					greyScale(findSelected(),currentZoom);
 				}
@@ -266,7 +241,7 @@ public class UI extends JFrame {
 		JButton btnZoomOut = new JButton("-");
 		btnZoomOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(rg.layerList.size()>0) {
+				if(hm.size()>0) {
 					if(currentZoom > 1) {
 						currentZoom-=1; 
 						greyScale(findSelected(),currentZoom);
@@ -328,7 +303,7 @@ public class UI extends JFrame {
 		JButton btnRGB = new JButton("RGB");
 		btnRGB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(rg.layerList.size()>0) {
+				if(hm.size()>0) {
 					double r = Double.parseDouble(txtFR.getText());
 					double g = Double.parseDouble(txtFG.getText());
 					double b = Double.parseDouble(txtFB.getText());
@@ -358,7 +333,7 @@ public class UI extends JFrame {
 		JButton btnGreyscale = new JButton("Grey");
 		btnGreyscale.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(rg.layerList.size()>0) {
+				if(hm.size()>0) {
 					greyScale(findSelected(),currentZoom);
 				}
 				else {
@@ -533,7 +508,6 @@ public class UI extends JFrame {
 					String name = selectedFile.getName(); 
 					Layer raster = new Layer(name,filePath); 
 					greyScale(raster,currentZoom);	
-					rg.layerList.add(raster);
 					
 					String[] newName = name.split("[.]"); // Very ugly solution but I cant be bothered
 					name = newName[0].toString(); 
@@ -551,7 +525,7 @@ public class UI extends JFrame {
 						
 					GridBagConstraints gbc_rdbtn = new GridBagConstraints();
 					gbc_rdbtn.gridx = 0;
-					gbc_rdbtn.gridy = rg.layerList.size()+1;
+					gbc_rdbtn.gridy = hm.size()+1;
 					btnGroupToc.add(rdbtn);
 					rdbtn.setBackground(Color.white);
 					tocBar.add(rdbtn,gbc_rdbtn);
