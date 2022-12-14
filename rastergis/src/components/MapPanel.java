@@ -3,7 +3,7 @@ package components;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
-
+import components.UI;
 public class MapPanel extends JPanel{
 	//Attributes 
 	public BufferedImage image; 
@@ -18,6 +18,7 @@ public class MapPanel extends JPanel{
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.drawImage(image,0,0,image.getWidth()*scale,image.getHeight()*scale,this);
+
+		g.drawImage(image,UI.x-(image.getWidth()*scale)/2,UI.y-(image.getHeight()*scale)/2,image.getWidth()*scale,image.getHeight()*scale,this);
 	}
 }

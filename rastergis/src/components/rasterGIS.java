@@ -6,7 +6,7 @@ import java.util.LinkedList;
 //Things like layers, operation history etc. 
 
 public class rasterGIS {
-	public LinkedList<Layer> layerList =new LinkedList<Layer>(); //Used to keep track of all layers 
+	LinkedList<Layer> layerList =new LinkedList<Layer>(); //Used to keep track of all layers 
 	
 	public rasterGIS() {
 		this.layerList=new LinkedList<Layer>();
