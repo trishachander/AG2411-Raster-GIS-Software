@@ -65,6 +65,7 @@ public class UI extends JFrame {
 	private JTextField txtFB; 
 	private JTextField txtCellValue;
 
+
 	/**
 	 * Launch the application.
 	 */
@@ -288,6 +289,12 @@ public class UI extends JFrame {
 		operationPanel.add(btnLocal);
 		
 		JButton btnZonal = new JButton("Zonal");
+		btnZonal.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ZonalOperations zo = new ZonalOperations();
+				zo.setVisible(true);
+			}
+		});
 		operationPanel.add(btnZonal);
 		
 		JPanel interactivePanel = new JPanel();
@@ -484,6 +491,7 @@ public class UI extends JFrame {
 		
 		JMenu mnNewMenu = new JMenu("Help");
 		menuBar.add(mnNewMenu);
+		
 	}
 	
 	//Action - Run when opening a raster from file -> open raster 

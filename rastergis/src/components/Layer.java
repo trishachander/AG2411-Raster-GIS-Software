@@ -159,7 +159,6 @@ public class Layer {
 		max = getMax();
 		min = getMin();
 		double range = max-min;
-		System.out.println(range);
 		for (int i=0; i<nRows; i++) {
 			for (int j=0; j<nCols; j++) {
 				int[] color = new int[3]; 
@@ -211,6 +210,7 @@ public class Layer {
 		return image;					
 	}	
 
+	//LOCAL OPERATIONS
 	public Layer localSum(Layer inLayer, String outLayerName) {
 		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
 		for (int i = 0; i < nRows; i++) {
@@ -353,6 +353,7 @@ public class Layer {
 		return intObjArray;
 		}
 	
+	//FOCAL OPERATIONS
 	public Layer focalVariety(int r, boolean IsSquare, String outLayerName){
 		Layer outLayer = new Layer(outLayerName, nRows, nCols , origin, resolution, nullValue);
 		for(int i = 0;i < nRows;i++) {
@@ -365,7 +366,6 @@ public class Layer {
 					Array[k] = values[m][n];
 				}
 				Arrays.sort(Array);
-				//System.out.print(Arrays.toString(Array));
 				int variety = 1;
 				for(int k = 0; k < Array.length-1;k++){
 					if(Array[k+1]!=Array[k]) {
@@ -462,7 +462,6 @@ public class Layer {
 						double x_slope = ((values[i-1][j+1]+2*values[i][j+1]+values[i+1][j+1])-(values[i-1][j-1]+2*values[i][j-1]+values[i+1][j-1]))/8*resolution;
 						double y_slope = ((values[i+1][j-1]+2*values[i+1][j]+values[i+1][j+1])-(values[i-1][j-1]+2*values[i-1][j]+values[i-1][j+1]))/8*resolution;
 						Aspect = 180*Math.atan2(y_slope, x_slope)/Math.PI;
-//						System.out.print(" "+Aspect);
 						if(y_slope==0&&x_slope==0) {
 							cell=-1;
 						}
@@ -475,7 +474,6 @@ public class Layer {
 						else {
 							cell=90.0-Aspect;
 							}
-//						System.out.print(" "+cell);
 						}	
 					else {
 						cell = nullValue;
@@ -516,6 +514,7 @@ public class Layer {
 		return outLayer;
 	}
 	
+	//ZONAL OPERATIONS
 	public Layer zonalMinimum(Layer zoneLayer, String outLayerName) {
 		Layer zoneOutPutLayer = new Layer(name, nRows, nCols, origin,
 				resolution, nullValue);
