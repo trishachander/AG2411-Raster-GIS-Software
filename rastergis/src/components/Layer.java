@@ -441,15 +441,13 @@ public class Layer {
 					double x_slope = ((values[i-1][j+1]+2*values[i][j+1]+values[i+1][j+1])-(values[i-1][j-1]+2*values[i][j-1]+values[i+1][j-1]))/8*resolution;
 					double y_slope = ((values[i+1][j-1]+2*values[i+1][j]+values[i+1][j+1])-(values[i-1][j-1]+2*values[i-1][j]+values[i-1][j+1]))/8*resolution;
 					Slope = Math.atan(Math.sqrt(Math.pow(x_slope,2)+Math.pow(y_slope,2)))*180/Math.PI;
-//					System.out.println(Slope);
 				}
 				else {
 					Slope = nullValue;
 				}
 				outLayer.values[i][j]=Math.round(Slope);
-				System.out.print(" "+outLayer.values[i][j]);	
+				
 			}
-			System.out.println();
 		}
 		return outLayer;
 	}
@@ -483,9 +481,7 @@ public class Layer {
 						cell = nullValue;
 					}
 					outLayer.values[i][j]=Math.round(cell);
-					System.out.print(" "+outLayer.values[i][j]);
 				}
-				System.out.println();
 			}
 			return outLayer;
 	}
@@ -497,10 +493,7 @@ public class Layer {
 			for(int i= 0 ; i<nRows;i++) {
 				for(int j=0;j<nCols;j++) {						
 						outLayer.values[i][j] = Math.round(outLayer.values[i][j]/9); 
-						
-					System.out.print("\t"+outLayer.values[i][j]);
 				}
-				System.out.println();	
 			}			
 			return outLayer;
 		}	
@@ -518,9 +511,7 @@ public class Layer {
 				}
 				Arrays.sort(Array);
 				outLayer.values[i][j]=Array[Array.length-1]-Array[0];
-				System.out.print("\t"+outLayer.values[i][j]);
 			}
-			System.out.println();
 		}
 		return outLayer;
 	}

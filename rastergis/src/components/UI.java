@@ -270,6 +270,8 @@ public class UI extends JFrame {
 		JButton btnFocal = new JButton("Focal");
 		btnFocal.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				FocalOperations fo = new FocalOperations();					
+				fo.setVisible(true);
 			}
 		});
 		operationPanel.add(btnFocal);
