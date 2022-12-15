@@ -1,10 +1,12 @@
-package se.kth.ag2411.mapalgebra;
+package components;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Enumeration;
 import java.util.HashMap;
 
@@ -19,6 +21,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+//import components.UI.OpenWebHelp;
+
 import java.awt.Color;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -37,6 +42,7 @@ import java.awt.Toolkit;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.event.ActionListener;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -50,6 +56,7 @@ public class UI extends JFrame {
 	private static JPanel rasterView; 
 	private final Action action = new OpenRaster();
 	private final Action save = new SaveRaster();
+	private final Action web_help = new OpenWebHelp();
 	private JPanel contentPane;
 	static ButtonGroup btnGroupToc = new ButtonGroup(); 
 	//private final Action action_zoomIn = new ZoomIn();
@@ -497,11 +504,14 @@ public class UI extends JFrame {
 		fileMenu.add(mntmSave);
 		
 		//Create "About" Menu 
-		JMenu aboutMenu = new JMenu("About");
-		menuBar.add(aboutMenu);
+//		JMenu aboutMenu = new JMenu("About");
+//		menuBar.add(aboutMenu);
 		
-		JMenu mnNewMenu = new JMenu("Help");
-		menuBar.add(mnNewMenu);
+		JMenu helpMenu = new JMenu("Help");
+		menuBar.add(helpMenu);
+		JMenuItem webHelp = new JMenuItem("Web Help");
+		webHelp.setAction(web_help);
+		helpMenu.add(webHelp);
 		
 	}
 	
@@ -556,6 +566,40 @@ public class UI extends JFrame {
 			}
 		}
 		
+		private class OpenWebHelp extends AbstractAction {
+			//private String fileName; 
+			
+			public OpenWebHelp() {
+				
+				putValue(NAME, "Open Web Help ...");
+				putValue(SHORT_DESCRIPTION, "Opens web help");
+			}
+			public static boolean openWebpage(URI uri) {
+		        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+		        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+		            try {
+		                desktop.browse(uri);
+		                return true;
+		            } catch (Exception e) {
+		                e.printStackTrace();
+		            }
+		        }
+		        return false;
+		    }
+			public void actionPerformed(ActionEvent e) {
+				
+				URI link;
+				try {
+	                link = new URI("https://trishachander01.wixsite.com/rastergis");
+	                openWebpage(link);
+
+	            } catch (URISyntaxException e1) {
+	                // TODO Add dialog saying something is wrong
+	                e1.printStackTrace();
+	            }
+			}
+				
+		}
 		public class SaveRaster extends AbstractAction{
 			
 			public SaveRaster() {
@@ -629,17 +673,3 @@ public class UI extends JFrame {
 			}
 		}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
