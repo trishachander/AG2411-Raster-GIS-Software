@@ -237,158 +237,43 @@ public class LocalOperations extends JFrame {
 					if(operation!=null) {
 						switch(operation) {
 						case "Sum":
-							result=raster1.localSum(raster2, "test");	
-							
-							JRadioButton rdbtn = new JRadioButton("LocalSum");
-							rdbtn.addActionListener(new ActionListener(){
-								public void actionPerformed(ActionEvent e) {
-									Layer current = UI.hm.get(rdbtn); 
-									UI.greyScale(current,UI.currentZoom); 
-								}
-							});
-							GridBagConstraints gbc_rdbtn = new GridBagConstraints();
-							gbc_rdbtn.gridx = 0;
-							gbc_rdbtn.gridy = UI.hm.size()+1;
-							UI.btnGroupToc.add(rdbtn);
-							rdbtn.setBackground(Color.white);
-							UI.tocBar.add(rdbtn,gbc_rdbtn);
-							UI.hm.put(rdbtn, result); 
-							rdbtn.setSelected(true);
-							dispose();
-							
-						}
-						switch(operation) {
+							result=raster1.localSum(raster2, "localSum");
+							break;
 						case "Subtraction":
-							result=raster1.localDifference(raster2, "test");	
-							
-							JRadioButton rdbtn = new JRadioButton("LocalDifference");
-							rdbtn.addActionListener(new ActionListener(){
-								public void actionPerformed(ActionEvent e) {
-									Layer current = UI.hm.get(rdbtn); 
-									UI.greyScale(current,UI.currentZoom); 
-								}
-							});
-							GridBagConstraints gbc_rdbtn = new GridBagConstraints();
-							gbc_rdbtn.gridx = 0;
-							gbc_rdbtn.gridy = UI.hm.size()+1;
-							UI.btnGroupToc.add(rdbtn);
-							rdbtn.setBackground(Color.white);
-							UI.tocBar.add(rdbtn,gbc_rdbtn);
-							UI.hm.put(rdbtn, result); 
-							rdbtn.setSelected(true);
-							dispose();
-							
-						}
-						switch(operation) {
+							result=raster1.localDifference(raster2, "localDifference");
+							break;
 						case "Product":
-							result=raster1.localProduct(raster2, "test");	
-							
-							JRadioButton rdbtn = new JRadioButton("LocalProduct");
-							rdbtn.addActionListener(new ActionListener(){
-								public void actionPerformed(ActionEvent e) {
-									Layer current = UI.hm.get(rdbtn); 
-									UI.greyScale(current,UI.currentZoom); 
-								}
-							});
-							GridBagConstraints gbc_rdbtn = new GridBagConstraints();
-							gbc_rdbtn.gridx = 0;
-							gbc_rdbtn.gridy = UI.hm.size()+1;
-							UI.btnGroupToc.add(rdbtn);
-							rdbtn.setBackground(Color.white);
-							UI.tocBar.add(rdbtn,gbc_rdbtn);
-							UI.hm.put(rdbtn, result); 
-							rdbtn.setSelected(true);
-							dispose();
-								
-						}
-						switch(operation) {
+							result=raster1.localProduct(raster2, "localProduct");
+							break;
 						case "Division":
-							result=raster1.localRatio(raster2, "test");	
-							
-							JRadioButton rdbtn = new JRadioButton("LocalRatio");
-							rdbtn.addActionListener(new ActionListener(){
-								public void actionPerformed(ActionEvent e) {
-									Layer current = UI.hm.get(rdbtn); 
-									UI.greyScale(current,UI.currentZoom); 
-								}
-							});
-							GridBagConstraints gbc_rdbtn = new GridBagConstraints();
-							gbc_rdbtn.gridx = 0;
-							gbc_rdbtn.gridy = UI.hm.size()+1;
-							UI.btnGroupToc.add(rdbtn);
-							rdbtn.setBackground(Color.white);
-							UI.tocBar.add(rdbtn,gbc_rdbtn);
-							UI.hm.put(rdbtn, result); 
-							rdbtn.setSelected(true);
-							dispose();
-								
-						}
-						switch(operation) {
+							result=raster1.localRatio(raster2, "localRatio");
+							break;
 						case "Maximum":
-							result=raster1.localMaximum(raster2, "test");	
-							
-							JRadioButton rdbtn = new JRadioButton("LocalMax");
-							rdbtn.addActionListener(new ActionListener(){
-								public void actionPerformed(ActionEvent e) {
-									Layer current = UI.hm.get(rdbtn); 
-									UI.greyScale(current,UI.currentZoom); 
-								}
-							});
-							GridBagConstraints gbc_rdbtn = new GridBagConstraints();
-							gbc_rdbtn.gridx = 0;
-							gbc_rdbtn.gridy = UI.hm.size()+1;
-							UI.btnGroupToc.add(rdbtn);
-							rdbtn.setBackground(Color.white);
-							UI.tocBar.add(rdbtn,gbc_rdbtn);
-							UI.hm.put(rdbtn, result); 
-							rdbtn.setSelected(true);
-							dispose();
-							
-						}
-						switch(operation) {
+							result=raster1.localMaximum(raster2, "localMaximum");
+							break;
 						case "Minimum":
-							result=raster1.localMinimum(raster2, "test");	
-							
-							JRadioButton rdbtn = new JRadioButton("LocalMin");
-							rdbtn.addActionListener(new ActionListener(){
-								public void actionPerformed(ActionEvent e) {
-									Layer current = UI.hm.get(rdbtn); 
-									UI.greyScale(current,UI.currentZoom); 
-								}
-							});
-							GridBagConstraints gbc_rdbtn = new GridBagConstraints();
-							gbc_rdbtn.gridx = 0;
-							gbc_rdbtn.gridy = UI.hm.size()+1;
-							UI.btnGroupToc.add(rdbtn);
-							rdbtn.setBackground(Color.white);
-							UI.tocBar.add(rdbtn,gbc_rdbtn);
-							UI.hm.put(rdbtn, result); 
-							rdbtn.setSelected(true);
-							dispose();
-							
-						}
-						switch(operation) {
+							result=raster1.localMinimum(raster2, "localMinimum");
+							break;
 						case "Mean":
-							result=raster1.localMean(raster2, "test");	
-							
-							JRadioButton rdbtn = new JRadioButton("LocalMean");
-							rdbtn.addActionListener(new ActionListener(){
-								public void actionPerformed(ActionEvent e) {
-									Layer current = UI.hm.get(rdbtn); 
-									UI.greyScale(current,UI.currentZoom); 
-								}
-							});
-							
-							GridBagConstraints gbc_rdbtn = new GridBagConstraints();
-							gbc_rdbtn.gridx = 0;
-							gbc_rdbtn.gridy = UI.hm.size()+1;
-							UI.btnGroupToc.add(rdbtn);
-							rdbtn.setBackground(Color.white);
-							UI.tocBar.add(rdbtn,gbc_rdbtn);
-							UI.hm.put(rdbtn, result); 
-							rdbtn.setSelected(true);
-							dispose();
-						}	
+							result=raster1.localMean(raster2, "localMean");
+							break;
+						}
+						JRadioButton rdbtn = new JRadioButton("Local");
+						rdbtn.addActionListener(new ActionListener(){
+							public void actionPerformed(ActionEvent e) {
+								Layer current = UI.hm.get(rdbtn); 
+								UI.greyScale(current,UI.currentZoom); 
+							}
+						});
+						GridBagConstraints gbc_rdbtn = new GridBagConstraints();
+						gbc_rdbtn.gridx = 0;
+						gbc_rdbtn.gridy = UI.hm.size()+1;
+						UI.btnGroupToc.add(rdbtn);
+						rdbtn.setBackground(Color.white);
+						UI.tocBar.add(rdbtn,gbc_rdbtn);
+						UI.hm.put(rdbtn, result); 
+						rdbtn.setSelected(true);
+						dispose();
 						
 					}
 					else 
