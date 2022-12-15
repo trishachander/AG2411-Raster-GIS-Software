@@ -89,7 +89,7 @@ public class UI extends JFrame {
 		// INITIALIZE WINDOW 
 		// 
 		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\milton\\Downloads\\worldwide.png"));
-		setTitle("rasterGIS");
+		setTitle("");
 		setDefaultCloseOperation(UI.EXIT_ON_CLOSE);
 		setBounds(100, 100, 774, 531);
 		contentPane = new JPanel();
@@ -130,6 +130,7 @@ public class UI extends JFrame {
 		view.setLayout(gbl_view);
 		
 		rasterView = new JPanel();
+		rasterView.setBackground(new Color(255, 255, 255));
 		rasterView.addMouseWheelListener(new MouseWheelListener() {
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				int scroll = e.getWheelRotation();
@@ -163,20 +164,20 @@ public class UI extends JFrame {
 
 			}
 		});
-		rasterView.addMouseListener(new MouseAdapter() {
-			//@Override
-			public void mouseClicked(MouseEvent e) {
-				int x = rasterView.getY();
-				int y = rasterView.getY();
-				Layer current = findSelected();
-				if(x>=0 && x<current.rows) {
-					if(y>=0 && y<current.columns) {
-						System.out.println(String.valueOf(current.values[x*y]));
-						txtCellValue.setText(String.valueOf(current.values[x*y]));
-					}
-				}
-			}
-		});
+//		rasterView.addMouseListener(new MouseAdapter() {
+//			//@Override
+//			public void mouseClicked(MouseEvent e) {
+//				int x = rasterView.getY();
+//				int y = rasterView.getY();
+//				Layer current = findSelected();
+//				if(x>=0 && x<current.rows) {
+//					if(y>=0 && y<current.columns) {
+//						System.out.println(String.valueOf(current.values[x*y]));
+//						txtCellValue.setText(String.valueOf(current.values[x*y]));
+//					}
+//				}
+//			}
+//		});
 //		x = rasterView.getWidth();
 //		y = rasterView.getHeight();
 		rasterView.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
@@ -202,8 +203,9 @@ public class UI extends JFrame {
 		view.add(scrollBarVertical, gbc_scrollBarVertical);
 		
 		JScrollBar scrollBarHorizontal = new JScrollBar();
+		scrollBarHorizontal.setMaximum(50);
 		scrollBarHorizontal.setBackground(new Color(255, 255, 255));
-		scrollBarHorizontal.setValue(50);
+		scrollBarHorizontal.setValue(25);
 		scrollBarHorizontal.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		scrollBarHorizontal.setOrientation(JScrollBar.HORIZONTAL);
 		GridBagConstraints gbc_scrollBarHorizontal = new GridBagConstraints();
@@ -234,7 +236,7 @@ public class UI extends JFrame {
 				}
 			}
 		});
-		//btnZoomIn.setAction(action_zoomIn);
+
 		btnZoomIn.setFont(new Font("SimSun", Font.PLAIN, 13));
 		operationPanel.add(btnZoomIn);
 		
@@ -257,7 +259,7 @@ public class UI extends JFrame {
 				}
 			}
 		});
-		//btnZoomOut.setAction(action_zoomOut);
+
 		btnZoomOut.setFont(new Font("SimSun", Font.PLAIN, 13));
 		operationPanel.add(btnZoomOut);
 		
@@ -276,9 +278,7 @@ public class UI extends JFrame {
 		btnLocal.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					LocalOperations lo = new LocalOperations();					
-					//frame.setEnabled(false); 
 					lo.setVisible(true);
-					//JOptionPane loInput = new JOptionPane();
 					
 				}
 			}
@@ -486,7 +486,6 @@ public class UI extends JFrame {
 	
 	//Action - Run when opening a raster from file -> open raster 
 		private class OpenRaster extends AbstractAction {
-			//private String fileName; 
 			
 			public OpenRaster() {
 				putValue(NAME, "Open raster ...");
@@ -550,7 +549,7 @@ public class UI extends JFrame {
 		
 		//Public GUI functions 
 		
-		//Visualize raster in greyscale
+		//Visualize raster in grey-scale
 		public static void greyScale(Layer input,double dScale){
 			int scale = (int)Math.round(dScale);
 			BufferedImage image = input.toImage();

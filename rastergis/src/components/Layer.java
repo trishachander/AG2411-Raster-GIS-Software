@@ -1,412 +1,689 @@
 package components;
-//Imports 
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Scanner;
+
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader; 
-import java.io.FileWriter; 
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.image.*;
-import java.lang.Math;
-import java.math.MathContext;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Random;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
+import java.text.*;
 
 public class Layer {
+	// Attributes (This is complete)
+	public String name; // name of this layer
+	public int nRows; // number of rows
+	public int nCols; // number of columns
+	public double[] origin = new double[2]; // x,y-coordinates of lower-left corner
+	public double resolution; // cell size
+	public double[][] values; // data. Alternatively, public double[][] values;
+	public double nullValue; // value designated as "No data"
 	
-	//Declare public Attributes 
-	public String name;
-	public int rows; 
-	public int columns; 
-	public double[] origin = new double[2];
-	public double cellSize;
-	public double[] values; 
-	public double nullValue;
-	
-	//Constructors  
-	public Layer(String layerName,String fileName){
-		this.name = layerName; //Set Layer object name as input
+	public double max = Double.NEGATIVE_INFINITY; 
+	public double min = Double.POSITIVE_INFINITY; 
 		
-		//Try parsing the file 
-		try {
-			File r = new File(fileName);
-			FileReader fReader = new FileReader(r);
-			BufferedReader bReader = new BufferedReader(fReader);
-			// Rows and what they include: 
-			// 1 - # columns 
-			// 2 - # rows
-			// 3 - # x-origin 
-			// 4 - # y-origin 
-			// 5 - cell size
-			// 6 - no-data value
-			String tt; //Temporary text variable
-			String[] tt2; //Temporary text array variable 2 
-			int xo; //X origin value
-			int yo; //Y origin value
-			String[] lineValues; 
-			int size;  // Size variable for use in loop
-			double vP = 0; //Value of cell for use in loop
-			int count = 0;
-			
-			// COLUMNS
-			tt = bReader.readLine(); 
-			tt2=tt.split("\\s+");
-			columns = Integer.parseInt(tt2[1]); //Finds # columns 
-			
-			// ROWS 
-			tt = bReader.readLine(); 
-			tt2=tt.split("\\s+");
-			rows =Integer.parseInt(tt2[1]); //Finds # rows 
-			
-			// XORIGIN
-			tt = bReader.readLine(); 
-			tt2=tt.split("\\s+");
-			xo = Integer.parseInt(tt2[1]);//X - origin 
-			
-			//YORIGIN
-			tt = bReader.readLine(); 
-			tt2=tt.split("\\s+");
-			yo = Integer.parseInt(tt2[1]);//y - origin 
+	//Constructor 
+	public Layer(String layerName, String fileName) {
+	
+		File rFile = new File (fileName);
+		if(rFile.exists()) {
+			this.name = layerName;
+		
+				try { 				
+					
+					File inputfile = new File(fileName);
+					FileReader fReader = new FileReader(inputfile);
+					BufferedReader bReader = new BufferedReader(fReader);
+					
+					String temporary;
+						
+					temporary = bReader.readLine().substring(14).trim();
+					nCols = Integer.parseInt(temporary);
+					temporary = bReader.readLine().substring(14).trim();
+					nRows = Integer.parseInt(temporary);
+					temporary = bReader.readLine().substring(14).trim();
+					origin[0] = Double.parseDouble(temporary);
+					temporary = bReader.readLine().substring(14).trim();
+					origin[1] = Double.parseDouble(temporary);
+					temporary = bReader.readLine().substring(14).trim();
+					resolution = Double.parseDouble(temporary);
+					temporary = bReader.readLine().substring(14).trim();
+					nullValue = Double.parseDouble(temporary);
+						
+					this.values = new double[nRows][nCols];
+								
+					// Read each of the remaining lines, which represents a row of raster values
+					for (int i = 0; i < nRows; i++) {
+						
+						String arow=bReader.readLine();					
+						String[] arow_value=arow.split("\\s+");
+						
+						for (int j = 0; j < nCols; j++) {
+							this.values[i][j]=Double.parseDouble(arow_value[j].trim());
+							if (values[i][j] > max) {
+								max = values[i][j];
+							}
+							if (values[i][j] < min) {
+								min = values[i][j];
+							}
+							
+						}
+						
+					}
+					
+					
+					bReader.close();
+			 						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+		}			
+		else {
+			System.out.println("the file does not exist");
+		}
+	}
+	
+	public Layer(String outLayerName, int nRows2, int nCols2, double[] ori, double res, double nullV) {
+		this.name = outLayerName;
+		this.nRows = nRows2;
+		this.nCols = nCols2;
+		this.origin[0] = ori[0];
+		this.origin[1] = ori[1];
+		this.resolution = res;
+		this.nullValue = nullV;
+		this.values = new double[nRows][nCols];
+	}
 
-			origin[0]=xo; // Set x origin 
-			origin[1]=yo; // Set y origin 
-			
-			//CELL SIZE
-			tt = bReader.readLine(); 
-			tt2=tt.split("\\s+");
-			cellSize =Integer.parseInt(tt2[1]); //Finds cell size 
-			
-			//NO DATA
-			tt = bReader.readLine(); 
-			tt2=tt.split("\\s+");
-			Double temp = Double.parseDouble(tt2[1]);
-			nullValue =(int)Math.round(temp); //Finds no-data value 
-			
-			//SIZE
-			size = this.rows*this.columns;
-			values = new double[size]; 
-			
-			for(int i = 0; i < this.rows; i++) {
-				tt = bReader.readLine(); 
-				lineValues = tt.split(" "); 
-				for(String s : lineValues) {
-					vP = Double.parseDouble(s);
-					this.values[count]=vP;
-					count += 1;
-				}
-			}	
-		}
-		catch (Exception e){
-			e.printStackTrace();
-		}
-	}
-	
-	public Layer(String layerName, int nRows, int nCols, double[] ori, double resolution, double nullV){
-		name = layerName; 
-		rows=nRows; 
-		columns=nCols; 
-		origin = ori;
-		cellSize=resolution; 
-		nullValue=nullV;
-		
-		values = new double[rows*columns];
-	}
-	
-	//--------------------
-	//Methods other than constructor(s)
-	//--------------------
-	
+	// Print (This is complete)
 	public void print(){
-		System.out.println("Number of Columns: " + columns);
-		System.out.println("Number of Rows: " + rows);
-		System.out.println("X-origin: "+origin[0]);
-		System.out.println("Y-origin: "+origin[1]);
-		System.out.println("Cell Size: "+cellSize);
-		System.out.println("No Data Value: "+nullValue);
+	//Print this layer to console
+		System.out.println("ncols "+nCols);
+		System.out.println("nrows "+nRows);
+		System.out.println("xllcorner "+origin[0]);
+		System.out.println("yllcorner "+origin[1]);
+		System.out.println("cellsize "+resolution);
+		System.out.println("NODATA_value " + nullValue);
 		
-		for(int r = 0; r < rows; r++) {
-			for(int c = 0; c < columns; c++) {
-				System.out.print(values[r*columns+c]+" ");
+		for (int i = 0; i < nRows; i++) {
+			for (int j = 0; j < nCols; j++) {
+			System.out.print(values[i][j]+" ");
 			}
 			System.out.println();
 		}
-		
-	}
-	
-	public BufferedImage toImage() {
-		// create a BufferedImage of the layer in grayscale 
-		BufferedImage image = new BufferedImage(this.columns,this.rows, BufferedImage.TYPE_INT_RGB);
-		WritableRaster raster = image.getRaster(); 
-		
-		double min = getMin();
-		double max = getMax();
-		
-		int[] color = new int[3];
-		int colorValue; 
-		
-		for(int i = 0; i < this.rows; i++) {
-			for(int j = 0; j < this.columns; j++) {
-				colorValue = (int)Math.round(convertToRange(values[i*this.columns+j],min,max));
-				color[0]=colorValue;
-				color[1]=colorValue;
-				color[2]=colorValue;
-				raster.setPixel(j,i,color);
-			}
-		}
-		return image;
-	}
-	
-	public BufferedImage toImage(double[] voi) {
-		// visualize a BufferedImage of the layer in color 
-		// create a BufferedImage of the layer in grey-scale 
-		BufferedImage image = new BufferedImage(this.columns,this.rows, BufferedImage.TYPE_INT_RGB);
-		WritableRaster raster = image.getRaster(); 
-		
-		int[] color = new int[3]; // Instantiate an empty vector 
-		
-		int numberOfValues = voi.length;
-		int[][] colorPalette = new int[numberOfValues][3]; // Instantiate a color palette   
-		
-		int randRange = 255;
-		int rand1;
-		int rand2;
-		int rand3;
-		int pCount=0; 
-		//Make random colors 
-		for(int h=0; h<numberOfValues; h++) {
-			Random randomColorValue = new Random();  
-			rand1 = randomColorValue.nextInt(randRange); 
-			rand2 = randomColorValue.nextInt(randRange);
-			rand3 = randomColorValue.nextInt(randRange); 
-
-			colorPalette[pCount][0] = rand1;
-			colorPalette[pCount][1] = rand2;
-			colorPalette[pCount][2] = rand3;
-			pCount += 1; 
-		}
-		
-		//Define default color 
-		int[] defColor = new int[3];
-		defColor[0]=0;
-		defColor[1]=0;
-		defColor[2]=0;
-		
-		for(int i = 0; i < this.rows; i++) {
-			for(int j = 0; j < this.columns; j++) {
-				boolean found = false;
-
-				
-				for(int o = 0; o<numberOfValues;o++) {
-					if(voi[o] == values[i*this.columns+j]){
-						color=colorPalette[o];
-						found = true;
-						raster.setPixel(j,i,color);
-						break;
-					}
-				}
-				
-				if(found == false) {
-					raster.setPixel(j,i,defColor);
-				}
-			}
-		}
-		return image; 
 	}
 	
 	public void save(String outputFileName) {
-		File file = new File(outputFileName); 
-		double[] lineTemp = new double [columns];  
+	
+		File file = new File(outputFileName);		
+		
 		try {
+			
 			FileWriter fWriter = new FileWriter(file);
-			fWriter.write("ncols         "+columns+"\n");
-			fWriter.write("nrows         "+rows+"\n");
-			fWriter.write("xllcorner     "+(int)Math.round(origin[0])+"\n");
-			fWriter.write("yllcorner     "+(int)Math.round(origin[1])+"\n");
-			fWriter.write("cellsize      "+(long)Math.round(cellSize)+"\n");
-			fWriter.write("NODATA_value  "+nullValue+"\n");
-			for(int r = 0; r < rows; r++) {
-				for(int c = 0; c < columns; c++) {
-					lineTemp[c]=values[r*columns+c]; 
+			
+			fWriter.write("ncols         "+nCols+"\n"); 
+			fWriter.write("nrows         "+nRows+"\n"); 
+			fWriter.write("xllcorner     "+origin[0]+"\n"); 
+			fWriter.write("yllcorner     "+origin[1]+"\n"); 
+			fWriter.write("cellsize      "+resolution+"\n"); 
+			fWriter.write("NODATA_value  "+nullValue+"\n"); 
+			
+			for (int i = 0; i < nRows; i++) {
+				for (int j = 0; j < nCols; j++) {
+					fWriter.write(values[i][j]+" "); 
 				}
-				for(double v : lineTemp) {
-					fWriter.write(v+" "); 
-				}
-				fWriter.write("\n"); 
+				fWriter.write("\n");
 			}
+			
 			fWriter.close();
-		}
-		catch(Exception e){
+			
+		}catch(Exception e) {
 			e.printStackTrace();
-		}
-	}
-	
-	//Method for gray scale visualization 
-	public void greyScale(String title ,double dScale){
-		int scale = (int)Math.round(dScale);
-		BufferedImage image = this.toImage();
-		MapPanel map  = new MapPanel(image,scale);
-
-		JFrame appFrame= new JFrame(title);
-		appFrame.add(map);
-		appFrame.pack();
-		appFrame.setSize(new Dimension(600,600));
-		appFrame.setVisible(true);
-		appFrame.setResizable(false);
-		appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-	
-	//--------------------
-	//Map Algebraic Methods
-	//--------------------
-	
-	//LOCAL SUM
-	public Layer localSum(Layer inLayer, String outLayerName){
-		Layer outLayer = new Layer(outLayerName, rows, columns, origin, cellSize, nullValue);
-		for(int i=0; i<(rows*columns); i++) {
-			outLayer.values[i]=values[i]+inLayer.values[i];
-		}
-		return outLayer;
-	}
-	
-	//FOCAL SUM - For testing neighborhood function // Code from lecture slides 
-	public Layer focalSum(int r, boolean isSquare, String outLayerName) {
-		Layer outLayer = new Layer(outLayerName, rows, columns, origin, cellSize, nullValue);
-		
-		int[] neighborhood;
-		double value;
-			for (int i=0; i<(rows*columns); i++) {
-				neighborhood = getNeighborhood(i, r, isSquare);
-				value = 0;
-				for (int j=0; j<neighborhood.length; j++) {
-					value = value + values[neighborhood[j]];
-					}
-				outLayer.values[i] = value;
-		}
-		return outLayer;
-	}
-	
-	//FOCAL VARIETY 
-	public Layer focalVariety(int r, boolean IsSquare,String outLayerName) {
-		Layer outLayer = new Layer(outLayerName, rows, columns, origin, cellSize, nullValue);
 				
-		int[] neighborhood;
-			for (int i=0; i<(rows*columns); i++) {
-				ArrayList<Double> l = new ArrayList<Double>(); 
-				Double cellValueObj; 
+		}
+	}
+	public BufferedImage toImage() { 
+		
+		
+		BufferedImage image = new BufferedImage(nCols, nRows, BufferedImage.TYPE_INT_RGB); 
+		 
+		
+		WritableRaster raster = image.getRaster(); 
+		 
+		max = getMax();
+		min = getMin();
+		double range = max-min;
+		System.out.println(range);
+		for (int i=0; i<nRows; i++) {
+			for (int j=0; j<nCols; j++) {
+				int[] color = new int[3]; 
+				int temp_col = (int)Math.round(((max-values[i][j])/range)*255);
+				color[0] = temp_col; // Red
+				color[1] = temp_col; // Green 
+				color[2] = temp_col; // Blue 
+				raster.setPixel(j, i, color); // (19,0) is the pixel at the top-right corner. 
+			}
+		}
+		
+		return image;
+	}
+		
+	public BufferedImage toImage(double[] v) { 
+		BufferedImage image = new BufferedImage(nCols, nRows, BufferedImage.TYPE_INT_RGB); 
+		WritableRaster raster = image.getRaster(); 
+		
+		double range = max-min;
+		int length = v.length;
+		int[][] colors = new int [length][3];
+		
+		for (int p=0; p < length; p++) {	
+			int[] randomcolor = new int[3];
+			randomcolor[0] = (int) Math.round(Math.random()*255);
+			randomcolor[1] = (int) Math.round(Math.random()*255);
+			randomcolor[2] = (int) Math.round(Math.random()*255);
+			colors[p] = randomcolor;
+		}
+			
+		for (int i=0; i<nRows; i++) {
+			for (int j=0; j<nCols; j++) {
+				int[] color = new int[3]; 
+				int temp_col = (int) Math.round((max-values[i][j])*255/range);
+				color[0] = (int) temp_col; // Red
+				color[1] = (int) temp_col; // Green 
+				color[2] = (int) temp_col; // Blue 
 				
-				neighborhood = getNeighborhood(i, r, IsSquare);
-				for (int j=0; j<neighborhood.length; j++) {
-					cellValueObj = values[neighborhood[j]]; 
-					l.add(cellValueObj); // Add cell value object to ArrayList
+				for (int p=0; p<length; p++) {
+						if (v[p] == values[i][j]) {
+							color[0] = colors[p][0]; // Red
+							color[1] = colors[p][1]; // Green 
+							color[2] = colors[p][2]; // Blue	
 					}
-				//Create a hashset in order to find the unique values 
-				HashSet<Double> hashSet = new HashSet<Double>(l);
-								
-				outLayer.values[i] = hashSet.size(); // Gives the number of unique values 
-		}
-		return outLayer;
-	}
-
-	//ZONAL MINIMUM
-	public Layer zonalMinimum(Layer zoneLayer, String outLayerName) {
-		Layer outLayer = new Layer(outLayerName, rows, columns, origin, cellSize, nullValue);
-		HashMap<Double, Double> hm = new HashMap<Double,Double>(); //Create hashmap
-		for(int i=0;i<(rows*columns);i++) {
-			if(!hm.containsKey(zoneLayer.values[i])) { //There is no key/value for the zone  
-				hm.put(zoneLayer.values[i],values[i]); // Add key if there is none (!="If there is no key")
-			}
-			else{ // There is a value for the zone 
-				if(values[i]<hm.get(zoneLayer.values[i])) { //The value is smaller 
-					hm.put(zoneLayer.values[i],values[i]); //Overwrite previous lowest value 
 				}
+				raster.setPixel(j, i, color);
 			}
-		}
-		
-		for(int j = 0; j < (rows*columns);j++) { //Write the lowest value for each zone to each cell in the outlayer
-			outLayer.values[j]=hm.get(zoneLayer.values[j]);
-		}
-		return outLayer;
-	}
-	
-	//--------------------
-	// Private methods
-	//--------------------
-	private int[] getNeighborhood(int index, int radius, boolean IsSquare) {
-	
-		ArrayList<Integer> neighborhoodList = new ArrayList<Integer>();
-		int neighbor; 
-		//Integer neighborObj; 
-		
-		int r = index/columns; //Find row and column for index
-		int c = index%columns; 
-		//boolean isInBound = false; // Variables for use with in-bound function 
-		double distance;
-		double rD;
-		
-		int rLowBound = Math.max(r - radius, 0); // Find bounds to loop
-		int rUppBound = Math.min(r + radius, rows-1);
-		int cLowBound = Math.max(c - radius,0);
-		int cUppBound = Math.min(c + radius,  columns-1);
-		
-			for(int row=rLowBound; row<rUppBound;row++) {
-				for(int col=cLowBound; col<cUppBound;col++) {
-					neighbor = row*columns+col; //Find neighbor index			
-					//isInBound = isInBound(row,col); //Check that the neighbor is valid
-					//if(isInBound) {
-						if(IsSquare==true) { // Square neighborhood 
-							//neighborObj= Integer.valueOf(neighbor); //The example code is deprecated
-							//neighborObj= new Integer(neighbor);
-							neighborhoodList.add(neighbor);	
-						}
-						else { // Circular neighborhood
-							distance = Math.sqrt(Math.pow(row-r,2)+Math.pow(col-c,2));
-							rD = Double.valueOf(r);
-							if(distance <= rD) {
-								//neighborObj= Integer.valueOf(neighbor); //The example code is deprecated
-								neighborhoodList.add(neighbor);
-							}
-						}
-					//}
-				}
-			}
-			int[] neighborhood = new int[neighborhoodList.size()]; //Get size of list 
-			int counter = 0; // Initiate counter 
-			for(Integer n : neighborhoodList) { 
-				neighborhood[counter]=n;
-				counter ++;
-			}
-			return neighborhood;
-	}
-	
-	/*private boolean isInBound(int r,int c) {
+		}	
+		return image;					
+	}	
 
-			if(r<0||r>=rows) {
-				return false;
-			}
-			else {
-				if(c<0||c>=columns) {
-					return false;
+	public Layer localSum(Layer inLayer, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
+		for (int i = 0; i < nRows; i++) {
+			for (int j = 0; j < nCols; j++) {
+				if (values[i][j] == nullValue || inLayer.values[i][j] == nullValue) {
+					outLayer.values[i][j] = nullValue;
 				}
 				else {
-					return true;
+					outLayer.values[i][j] = values[i][j] + inLayer.values[i][j];
 				}
 			}
+		}
+		return outLayer;
+	}
+	
+	public Layer localDifference(Layer inLayer, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
+		for (int i = 0; i < nRows; i++) {
+			for (int j = 0; j < nCols; j++) {
+				if (values[i][j] == nullValue || inLayer.values[i][j] == nullValue) {
+					outLayer.values[i][j] = nullValue;
+				}
+				else {
+					outLayer.values[i][j] = values[i][j] - inLayer.values[i][j];
+				}
+			}
+		}
+		return outLayer;
+	}
+	
+	public Layer localProduct(Layer inLayer, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
+		for (int i = 0; i < nRows; i++) {
+			for (int j = 0; j < nCols; j++) {
+				if (values[i][j] == nullValue || inLayer.values[i][j] == nullValue) {
+					outLayer.values[i][j] = nullValue;
+				}
+				else {
+					outLayer.values[i][j] = values[i][j] * inLayer.values[i][j];
+				}
+			}
+		}
+		return outLayer;
+	}
+	
+	public Layer localRatio(Layer inLayer, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
+		for (int i = 0; i < nRows; i++) {
+			for (int j = 0; j < nCols; j++) {
+				if (values[i][j] == nullValue || inLayer.values[i][j] == nullValue) {
+					outLayer.values[i][j] = nullValue;
+				}
+				else {
+					if (inLayer.values[i][j] == 0) {
+						outLayer.values[i][j] = nullValue;
+					}
+					else {
+						outLayer.values[i][j] = values[i][j] / inLayer.values[i][j];
+					}
+				}
+			}
+		}
+		return outLayer;
+	}
+	public Layer localMaximum(Layer inLayer, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
+		for (int i = 0; i < nRows; i++) {
+			for (int j = 0; j < nCols; j++) {
+				if (values[i][j] == nullValue || inLayer.values[i][j] == nullValue) {
+					outLayer.values[i][j] = nullValue;
+				}
+				else {
+					outLayer.values[i][j] = Math.max(values[i][j], inLayer.values[i][j]);
+				}
+			}
+		}
+		return outLayer;
+	}
+	public Layer localMinimum(Layer inLayer, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
+		for (int i = 0; i < nRows; i++) {
+			for (int j = 0; j < nCols; j++) {
+				if (values[i][j] == nullValue || inLayer.values[i][j] == nullValue) {
+					outLayer.values[i][j] = nullValue;
+				}
+				else {
+					outLayer.values[i][j] = Math.min(values[i][j], inLayer.values[i][j]);
+				}
+			}
+		}
+		return outLayer;
+	}
+	public Layer localMean(Layer inLayer, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName, nRows, nCols, origin, resolution, nullValue);
+		for (int i = 0; i < nRows; i++) {
+			for (int j = 0; j < nCols; j++) {
+				if (values[i][j] == nullValue || inLayer.values[i][j] == nullValue) {
+					outLayer.values[i][j] = nullValue;
+				}
+				else {
+					outLayer.values[i][j] = (values[i][j] + inLayer.values[i][j]) / 2;
+				}
+			}
+		}
+		return outLayer;
+	}
+	
+	public int[] getneighbourhood(int row, int col ,int radius, boolean isSquare){
+		ArrayList<Integer> l  = new ArrayList<Integer> ();	
+		if(isSquare == true) {
+			for(int i = row - radius; i <=row + radius; i++) {
+				for(int j = col - radius; j <= col + radius; j++) {
+					if((i>=0)&&(i<nRows)&&(j>=0)&&(j<nCols)) {
+						int neighborObj = i*nCols+j;
+						l.add(neighborObj);
+					}
+					else{
+						continue;
+					}
+				}
+			}
+			
+		}
+		else {
+			for(int i=0;i<nRows;i++) {
+				for(int j =0;j<nCols;j++) {
+					if((Math.pow((i-row),2)+ Math.pow((j-col),2))<=Math.pow(radius,2)){
+						int neighObj = i*nCols+j;
+						l.add(neighObj);
+					}
+				}
+			}
+		}
+		int [] intObjArray = new int[l.size()];
+		int count = 0;
+		for(int intObj:l) {
+			intObjArray[count] = intObj;
+			count++;
+			}
+		return intObjArray;
+		}
+	
+	public Layer focalVariety(int r, boolean IsSquare, String outLayerName){
+		Layer outLayer = new Layer(outLayerName, nRows, nCols , origin, resolution, nullValue);
+		for(int i = 0;i < nRows;i++) {
+			for (int j = 0; j<nCols;j++) {
+				int[] arrayneighbor = getneighbourhood(i,j,r,IsSquare);
+				double[] Array = new double[arrayneighbor.length];
+				for(int k=0; k <arrayneighbor.length;k++) {
+					int m = arrayneighbor[k]/nCols;
+					int n = arrayneighbor[k]%nCols;
+					Array[k] = values[m][n];
+				}
+				Arrays.sort(Array);
+				//System.out.print(Arrays.toString(Array));
+				int variety = 1;
+				for(int k = 0; k < Array.length-1;k++){
+					if(Array[k+1]!=Array[k]) {
+						variety++;
+						
+					}
+					else {
+						continue;
+					}
+					outLayer.values[i][j] = variety;
+				}
+			}
+		}
+		return outLayer;
+	}
+	
+	
+	public Layer focalSum(int r ,boolean IsSquare, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName,nRows,nCols,origin,resolution, nullValue);
+		for(int i = 0;i < nRows;i++) {
+			for (int j = 0; j<nCols;j++) {
+				int[] arrayneighbor = getneighbourhood(i,j,r,IsSquare);
+				double[] Array = new double[arrayneighbor.length];
+				for(int k=0; k <arrayneighbor.length;k++) {
+					int m = arrayneighbor[k]/nCols;
+					int n = arrayneighbor[k]%nCols;
+					Array[k] = values[m][n];
+				}
+				Arrays.sort(Array);
+				int sum=0;
+				for(int k=0;k<Array.length;k++) {
+					sum+=Array[k];
+				}
+				outLayer.values[i][j] = sum;
+			}
+		}
+		return outLayer;
+	}
+	public double focalMaximum(int r ,boolean IsSquare, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName,nRows,nCols,origin,resolution, nullValue);
+		outLayer.focalSum(r, IsSquare, outLayerName);
+		double Max = values[0][0];
+		for(int i=0;i<nRows;i++) {
+			for(int j=0;j<nCols;j++) {
+				if(Max< values[i][j]) {
+					Max = values[i][j];
+					}					
+				}
+			}				
+			return Max;
+		}
+	public double focalMinimum(int r ,boolean IsSquare, String outLayerName) {
+		Layer outLayer = new Layer(outLayerName,nRows,nCols,origin,resolution, nullValue);
+		outLayer.focalSum(r, IsSquare, outLayerName);
+		double Min = values[0][0];
+		for(int i=0;i<nRows;i++) {
+			for(int j=0;j<nCols;j++) {
+				if(Min > values[i][j]) {
+					Min = values[i][j];
+					}					
+				}
+			}				
+			return Min;
+		}
+	
+	public Layer focalSlope(String outLayerName) {
+		Layer outLayer = new Layer(outLayerName,nRows,nCols,origin,resolution, nullValue);
+	
+		double Slope;
+		for(int i=0;i<nRows;i++) {
+			for(int j=0;j<nCols;j++) {
+				if(i>=1&&i<nRows-1&&j>=1&&j<nCols-1){
+					double x_slope = ((values[i-1][j+1]+2*values[i][j+1]+values[i+1][j+1])-(values[i-1][j-1]+2*values[i][j-1]+values[i+1][j-1]))/8*resolution;
+					double y_slope = ((values[i+1][j-1]+2*values[i+1][j]+values[i+1][j+1])-(values[i-1][j-1]+2*values[i-1][j]+values[i-1][j+1]))/8*resolution;
+					Slope = Math.atan(Math.sqrt(Math.pow(x_slope,2)+Math.pow(y_slope,2)))*180/Math.PI;
+//					System.out.println(Slope);
+				}
+				else {
+					Slope = nullValue;
+				}
+				outLayer.values[i][j]=Math.round(Slope);
+				System.out.print(" "+outLayer.values[i][j]);	
+			}
+			System.out.println();
+		}
+		return outLayer;
+	}
 		
+	public Layer focalAspect(String outLayerName) {
+		Layer outLayer = new Layer(outLayerName,nRows,nCols,origin,resolution, nullValue);
+		double Aspect;
+		double cell;
+			for(int i=0;i<nRows;i++) {
+				for(int j=0;j<nCols;j++) {
+					if(i>=1&&i<nRows-1&&j>=1&&j<nCols-1) {
+						double x_slope = ((values[i-1][j+1]+2*values[i][j+1]+values[i+1][j+1])-(values[i-1][j-1]+2*values[i][j-1]+values[i+1][j-1]))/8*resolution;
+						double y_slope = ((values[i+1][j-1]+2*values[i+1][j]+values[i+1][j+1])-(values[i-1][j-1]+2*values[i-1][j]+values[i-1][j+1]))/8*resolution;
+						Aspect = 180*Math.atan2(y_slope, x_slope)/Math.PI;
+//						System.out.print(" "+Aspect);
+						if(y_slope==0&&x_slope==0) {
+							cell=-1;
+						}
+						else if(Aspect<0) {
+							cell = 90.0-Aspect;	
+							}
+						else if(Aspect>90) {
+							cell = 360.0-Aspect+90;
+							}
+						else {
+							cell=90.0-Aspect;
+							}
+//						System.out.print(" "+cell);
+						}	
+					else {
+						cell = nullValue;
+					}
+					outLayer.values[i][j]=Math.round(cell);
+					System.out.print(" "+outLayer.values[i][j]);
+				}
+				System.out.println();
+			}
+			return outLayer;
+	}
+	
+	public Layer focalMean(int r,boolean IsSquare,String outLayerName) {
+		Layer outLayer = new Layer(outLayerName,nRows,nCols,origin,resolution, nullValue);			
+		outLayer.values=this.values;	
+		outLayer=outLayer.focalSum(r,IsSquare,outLayerName);	
+			for(int i= 0 ; i<nRows;i++) {
+				for(int j=0;j<nCols;j++) {						
+						outLayer.values[i][j] = Math.round(outLayer.values[i][j]/9); 
+						
+					System.out.print("\t"+outLayer.values[i][j]);
+				}
+				System.out.println();	
+			}			
+			return outLayer;
+		}	
+	
+	public Layer focalRange(int r,boolean IsSquare,String outLayerName) {
+		Layer outLayer = new Layer(outLayerName,nRows,nCols,origin,resolution, nullValue);
+		for(int i = 0;i < nRows;i++) {
+			for (int j = 0; j<nCols;j++) {
+				int[] arrayneighbor = getneighbourhood(i,j,r,IsSquare);
+				double[] Array = new double[arrayneighbor.length];
+				for(int k=0; k <arrayneighbor.length;k++) {
+					int m = arrayneighbor[k]/nCols;
+					int n = arrayneighbor[k]%nCols;
+					Array[k] = values[m][n];
+				}
+				Arrays.sort(Array);
+				outLayer.values[i][j]=Array[Array.length-1]-Array[0];
+				System.out.print("\t"+outLayer.values[i][j]);
+			}
+			System.out.println();
+		}
+		return outLayer;
+	}
+	
+	public Layer zonalMinimum(Layer zoneLayer, String outLayerName) {
+		Layer zoneOutPutLayer = new Layer(name, nRows, nCols, origin,
+				resolution, nullValue);
+		HashMap<Double, Double> uniqueZone = new HashMap<>(); 
+		double zoneCount = 0;
+		for (int i = 0; i < nRows; i++) {
+			for (int j = 0; j < nCols; j++) {
+				if (uniqueZone.containsValue(zoneLayer.values[i][j]) == false) {
+					zoneCount = zoneCount + 1;
+					uniqueZone.put(zoneCount, zoneLayer.values[i][j]); 
+				}
 
-	}*/
+			}
+
+		}
+		
+		HashMap<Double, Double> minZone = new HashMap<>(); 
+		for (double z = 1; z <= zoneCount; z++) {
+			double minimum = Double.POSITIVE_INFINITY;
+			for (int i = 0; i < nRows; i++) {
+				for (int j = 0; j < nCols; j++) {
+					if (zoneLayer.values[i][j] == uniqueZone.get(z)) { 
+						if (values[i][j] < minimum) {
+							minimum = values[i][j];
+						}
+					}
+				}
+			}
+			minZone.put(z, minimum); 
+		}
+		
+		for (double z = 1; z <= zoneCount; z++) {
+			for (int i = 0; i < nRows; i++) {
+				for (int j = 0; j < nCols; j++) {
+					if (zoneLayer.values[i][j] == uniqueZone.get(z)) {  
+						zoneOutPutLayer.values[i][j] = minZone.get(z);
+					}
+
+				}
+			}
+		}
+
+		return zoneOutPutLayer;
+	}
+	
+	public Layer zonalMean(Layer zoneLayer, String outLayerName) {
+		Layer zoneOutPutLayer = new Layer(name, nRows, nCols, origin,
+				resolution, nullValue);
+		HashMap<Double, Double> uniqueZone = new HashMap<>(); // Save all zones.
+		double zoneCount = 0;
+		for (int i = 0; i < nRows; i++) {
+			for (int j = 0; j < nCols; j++) {
+				if (uniqueZone.containsValue(zoneLayer.values[i][j]) == false) { // Does the value exist in zonemap?
+					zoneCount = zoneCount + 1;
+					uniqueZone.put(zoneCount, zoneLayer.values[i][j]); // If not, add it.
+				}
+			}
+		}
+		
+		HashMap<Double, Double> meanZone = new HashMap<>(); 
+		for (double z = 1; z <= zoneCount; z++) {
+			ArrayList<Double> zoneValues = new ArrayList<Double>();
+			double mean = 0;
+			for (int i = 0; i < nRows; i++) {
+				for (int j = 0; j < nCols; j++) {
+					if (zoneLayer.values[i][j] == uniqueZone.get(z)) { 
+						zoneValues.add(values[i][j]);
+					}
+					}
+				}
+			double total = 0;
+			for (int k = 0; k<=zoneValues.size()-1; k++) {
+					total = total + zoneValues.get(k);
+					mean = total/zoneValues.size();
+			}
+			meanZone.put(z, mean); 
+		}
+		
+		for (double z = 1; z <= zoneCount; z++) {
+			for (int i = 0; i < nRows; i++) {
+				for (int j = 0; j < nCols; j++) {
+					if (zoneLayer.values[i][j] == uniqueZone.get(z)) { 
+						zoneOutPutLayer.values[i][j] = meanZone.get(z);
+					}
+				}
+			}
+		}
+		return zoneOutPutLayer;
+	}
+	public Layer zonalMajority(Layer zoneLayer, String outLayerName) {
+		Layer zoneOutPutLayer = new Layer(name, nRows, nCols, origin,
+				resolution, nullValue);
+		HashMap<Double, Double> uniqueZone = new HashMap<>(); // Save all zones.
+		double zoneCount = 0;
+		for (int i = 0; i < nRows; i++) {
+			for (int j = 0; j < nCols; j++) {
+				if (uniqueZone.containsValue(zoneLayer.values[i][j]) == false) { // Does the value exist in zonemap?
+					zoneCount = zoneCount + 1;
+					uniqueZone.put(zoneCount, zoneLayer.values[i][j]); // If not, add it.
+				}
+			}
+		}
+		
+		HashMap<Double, Double> majorityValues = new HashMap<>(); 
+		for (double z = 1; z <= zoneCount; z++) {
+			ArrayList<Double> zoneValues = new ArrayList<Double>();
+			double majorityCount = 0;
+			double majorityValue = 0;
+			for (int i = 0; i < nRows; i++) {
+				for (int j = 0; j < nCols; j++) {
+					if (zoneLayer.values[i][j] == uniqueZone.get(z)) { 
+						zoneValues.add(values[i][j]);
+						}
+					}
+				}
+			HashMap<Double, Integer> valueCount = new HashMap<>();
+			for (int k = 0; k<=zoneValues.size()-1; k++) {
+				double zoneValue = zoneValues.get(k);
+				if (!valueCount.containsKey(zoneValue)) {
+					valueCount.put(zoneValue, 0);
+				}
+				if (valueCount.containsKey(zoneValue)) {
+					valueCount.computeIfPresent(zoneValue, (value, count) -> count + 1);
+				}
+			}
+			for (double key : valueCount.keySet()) {
+				if (valueCount.get(key) > majorityCount) {
+					majorityCount = valueCount.get(key);
+					majorityValue = key;
+				}
+				else if (valueCount.get(key) == majorityCount){
+					if (key < majorityValue) {
+						majorityCount = valueCount.get(key);
+						majorityValue = key;
+					}
+				}
+				
+			}
+			majorityValues.put(z, majorityValue); 
+		}
+		
+		for (double z = 1; z <= zoneCount; z++) {
+			for (int i = 0; i < nRows; i++) {
+				for (int j = 0; j < nCols; j++) {
+					if (zoneLayer.values[i][j] == uniqueZone.get(z)) { 
+						zoneOutPutLayer.values[i][j] = majorityValues.get(z);
+					}
+				}
+			}
+		}
+		return zoneOutPutLayer;
+	}
 	
 	private double getMax() {
 		double max = Double.NEGATIVE_INFINITY;
-		for(int i = 0; i < this.rows; i++) {
-			for(int j = 0; j < this.columns; j++) {
-				if(values[i*this.columns+j] > max) {
-					max = values[i*this.columns+j];
+		for(int i = 0; i < this.nRows; i++) {
+			for(int j = 0; j < this.nCols; j++) {
+				if(values[i][j] > max) {
+					max = values[i][j];
 				}
 			}
 		}
@@ -415,23 +692,15 @@ public class Layer {
 
 	private double getMin() {
 		double min = Double.POSITIVE_INFINITY;
-		for(int i = 0; i < this.rows; i++) {
-			for(int j = 0; j < this.columns; j++) {
-				if(values[i*this.columns+j] < min) {
-					min = values[i*this.columns+j];
+		for(int i = 0; i < this.nRows; i++) {
+			for(int j = 0; j < this.nCols; j++) {
+				if(values[i][j] < min) {
+					min = values[i][j];
 				}
 			}
 		}
 		return min;
 	}
-	
-	private double convertToRange(double v, double min, double max) {
-		double oldRange = max-min;
-		double newRange = 255; 
-		double newValue = ((max-v)/(oldRange))*newRange;
-		return newValue;
-	}
-	
 	
 	
 }
