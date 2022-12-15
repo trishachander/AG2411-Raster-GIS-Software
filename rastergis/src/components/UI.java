@@ -1,4 +1,4 @@
-package components;
+package se.kth.ag2411.mapalgebra;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -313,9 +313,13 @@ public class UI extends JFrame {
 		btnRGB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(hm.size()>0) {
-					double r = Double.parseDouble(txtFR.getText());
-					double g = Double.parseDouble(txtFG.getText());
-					double b = Double.parseDouble(txtFB.getText());
+					String text1 = txtFR.getText();
+					String text2 = txtFG.getText();
+					String text3 = txtFB.getText();
+				try {
+					double r = Double.parseDouble(text1);
+					double g = Double.parseDouble(text2);
+					double b = Double.parseDouble(text3);
 					
 					double[] vois = new double[3];
 					vois[0]=r;
@@ -323,10 +327,17 @@ public class UI extends JFrame {
 					vois[2]=b;
 					
 					RGB(findSelected(),(double)currentZoom,vois);
+				} catch (NumberFormatException nfe) {
+					if (text1.length() > 0 && text2.length() > 0 && text3.length() > 0) {
+						consoleOutput.setText("Inputs need to be numbers");
+					}
+					else {
+						consoleOutput.setText("Three values needed");
+						}
+					}
 				}
-				else {
+				else
 					consoleOutput.setText("No layers");
-				}				
 			}
 		});
 		
@@ -618,3 +629,17 @@ public class UI extends JFrame {
 			}
 		}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
