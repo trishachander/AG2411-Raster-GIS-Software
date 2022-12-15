@@ -49,6 +49,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseMotionAdapter;
+
 
 public class UI extends JFrame {
 	static int currentZoom=1; 
@@ -59,8 +61,6 @@ public class UI extends JFrame {
 	private final Action web_help = new OpenWebHelp();
 	private JPanel contentPane;
 	static ButtonGroup btnGroupToc = new ButtonGroup(); 
-	//private final Action action_zoomIn = new ZoomIn();
-	//private final Action action_zoomOut = new ZoomOut();
 	private JTextField consoleOutput;
 	private JPanel tocPanel; 
 	static JToolBar tocBar;
@@ -71,6 +71,9 @@ public class UI extends JFrame {
 	private JTextField txtFG;
 	private JTextField txtFB; 
 	private JTextField txtCellValue;
+	static JScrollBar scrollBarVertical;
+	static JScrollBar scrollBarHorizontal;
+
 
 
 	/**
@@ -96,8 +99,8 @@ public class UI extends JFrame {
 		//
 		// INITIALIZE WINDOW 
 		// 
-		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\milton\\Downloads\\worldwide.png"));
-		setTitle("");
+		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\milton\\Downloads\\enzyme.png"));
+		setTitle("kevlarGIS");
 		setDefaultCloseOperation(UI.EXIT_ON_CLOSE);
 		setBounds(100, 100, 774, 531);
 		contentPane = new JPanel();
@@ -172,22 +175,24 @@ public class UI extends JFrame {
 
 			}
 		});
-//		rasterView.addMouseListener(new MouseAdapter() {
-//			//@Override
-//			public void mouseClicked(MouseEvent e) {
-//				int x = rasterView.getY();
-//				int y = rasterView.getY();
-//				Layer current = findSelected();
-//				if(x>=0 && x<current.rows) {
-//					if(y>=0 && y<current.columns) {
-//						System.out.println(String.valueOf(current.values[x*y]));
-//						txtCellValue.setText(String.valueOf(current.values[x*y]));
-//					}
-//				}
-//			}
-//		});
-//		x = rasterView.getWidth();
-//		y = rasterView.getHeight();
+		rasterView.addMouseListener(new MouseAdapter() {
+			//@Override
+			public void mouseClicked(MouseEvent e) {
+				int x = rasterView.getY();
+				int y = rasterView.getY();
+				if(!hm.isEmpty()) {
+					Layer current = findSelected();
+					if(x>=0 && x<current.nRows) {
+						if(y>=0 && y<current.nCols) {
+							System.out.println(String.valueOf(current.values[x][y]));
+							txtCellValue.setText(String.valueOf(current.values[x][y]));
+						}
+					}
+				}
+			}
+		});
+		x = rasterView.getWidth();
+		y = rasterView.getHeight();
 		rasterView.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 		rasterView.setBorder(new LineBorder(new Color(0, 0, 0)));
 		GridBagConstraints gbc_rasterView = new GridBagConstraints();
@@ -198,9 +203,27 @@ public class UI extends JFrame {
 		view.add(rasterView, gbc_rasterView);
 		rasterView.setLayout(new BorderLayout(0, 0));
 		
-		JScrollBar scrollBarVertical = new JScrollBar();
+		scrollBarVertical = new JScrollBar();
+		scrollBarVertical.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if(!hm.isEmpty()) {
+					greyScale(findSelected(),currentZoom);
+				}
+				
+			}
+		});
+		
+		scrollBarVertical.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(!hm.isEmpty()) {
+					greyScale(findSelected(),currentZoom);
+				}
+			}
+		});
+		scrollBarVertical.setMinimum(-100);
 		scrollBarVertical.setBackground(new Color(255, 255, 255));
-		scrollBarVertical.setValue(50);
 		scrollBarVertical.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		scrollBarVertical.setUnitIncrement(10);
 		GridBagConstraints gbc_scrollBarVertical = new GridBagConstraints();
@@ -210,10 +233,26 @@ public class UI extends JFrame {
 		gbc_scrollBarVertical.gridy = 0;
 		view.add(scrollBarVertical, gbc_scrollBarVertical);
 		
-		JScrollBar scrollBarHorizontal = new JScrollBar();
-		scrollBarHorizontal.setMaximum(50);
+		scrollBarHorizontal = new JScrollBar();
+		scrollBarHorizontal.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(!hm.isEmpty()) {
+					greyScale(findSelected(),currentZoom);
+				}
+			}
+		});
+		scrollBarHorizontal.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if(!hm.isEmpty()) {
+					greyScale(findSelected(),currentZoom);
+				}
+			}
+		});
+		scrollBarHorizontal.setForeground(Color.LIGHT_GRAY);
+		scrollBarHorizontal.setMinimum(-100);
 		scrollBarHorizontal.setBackground(new Color(255, 255, 255));
-		scrollBarHorizontal.setValue(25);
 		scrollBarHorizontal.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		scrollBarHorizontal.setOrientation(JScrollBar.HORIZONTAL);
 		GridBagConstraints gbc_scrollBarHorizontal = new GridBagConstraints();
@@ -306,7 +345,7 @@ public class UI extends JFrame {
 		
 		JPanel interactivePanel = new JPanel();
 		interactivePanel.setMaximumSize(new Dimension(32767, 100));
-		interactivePanel.setBackground(new Color(153, 204, 204));
+		interactivePanel.setBackground(new Color(0, 204, 204));
 		interactivePanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		contentPane.add(interactivePanel, BorderLayout.SOUTH);
 		GridBagLayout gbl_interactivePanel = new GridBagLayout();

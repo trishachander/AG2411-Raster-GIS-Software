@@ -19,6 +19,6 @@ public class MapPanel extends JPanel{
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		g.drawImage(image,UI.x-(image.getWidth()*scale)/2,UI.y-(image.getHeight()*scale)/2,image.getWidth()*scale,image.getHeight()*scale,this);
+		g.drawImage(image,UI.x-(image.getWidth()*scale)/2+(UI.scrollBarHorizontal.getValue())*UI.currentZoom,UI.y-(image.getHeight()*scale)/2+(UI.scrollBarVertical.getValue())*UI.currentZoom,image.getWidth()*scale,image.getHeight()*scale,this);
 	}
 }
