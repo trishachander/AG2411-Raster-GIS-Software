@@ -1,4 +1,4 @@
-package components;
+package se.kth.ag2411.mapalgebra;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 
@@ -362,15 +363,67 @@ public class UI extends JFrame {
 					String text1 = txtFR.getText();
 					String text2 = txtFG.getText();
 					String text3 = txtFB.getText();
+					int counter = 0;
+					int otherInput = 0;
+					ArrayList<Double> numberList = new ArrayList<Double>();
 				try {
-					double r = Double.parseDouble(text1);
-					double g = Double.parseDouble(text2);
-					double b = Double.parseDouble(text3);
+					double n1 = Double.parseDouble(text1);
+					counter+=1;
+					numberList.add(n1);
+					
+				} catch (NumberFormatException nfe) {
+					if (text1.length() > 0) {
+						otherInput = 1;
+						}
+					}
+				try {
+					double n2 = Double.parseDouble(text2);
+					counter+=1;
+					numberList.add(n2);
+					
+				} catch (NumberFormatException nfe) {
+					if (text2.length() > 0) {
+						otherInput = 1;
+						}
+					}
+				try {
+					double n3 = Double.parseDouble(text3);
+					counter+=1;
+					numberList.add(n3);
+					
+				} catch (NumberFormatException nfe) {
+					if (text3.length() > 0) {
+						otherInput = 1;
+						}
+					}
+				if (counter > 0 && otherInput == 0) {
+					double[] vois = new double[counter];
+					for (int i=0;i<counter;i++) {
+						vois[i]=numberList.get(i);
+					}
+					RGB(findSelected(),(double)currentZoom,vois);
+				}
+				if (text1.length() == 0 && text2.length() == 0 && text3.length() == 0) {
+					consoleOutput.setText("No values given");
+					}
+				if (otherInput == 1) {
+					consoleOutput.setText("Inputs need to be numbers");
+					}
+				}
+			else {
+				consoleOutput.setText("No layers");
+				}
+			}
+		});
+				/*try {	
+					double n1 = Double.parseDouble(text1);
+					double n2 = Double.parseDouble(text2);
+					double n3 = Double.parseDouble(text3);
 					
 					double[] vois = new double[3];
-					vois[0]=r;
-					vois[1]=g;
-					vois[2]=b;
+					vois[0]=n1;
+					vois[1]=n2;
+					vois[2]=n3;
 					
 					RGB(findSelected(),(double)currentZoom,vois);
 				} catch (NumberFormatException nfe) {
@@ -385,7 +438,7 @@ public class UI extends JFrame {
 				else
 					consoleOutput.setText("No layers");
 			}
-		});
+		});*/
 		
 		JLabel lblColorSettings = new JLabel("Color Settings:");
 		lblColorSettings.setFont(new Font("Tahoma", Font.BOLD, 10));
@@ -712,3 +765,17 @@ public class UI extends JFrame {
 			}
 		}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
