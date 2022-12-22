@@ -1,4 +1,4 @@
-package components;
+package se.kth.ag2411.mapalgebra;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -159,6 +159,12 @@ public class UI extends JFrame {
 							//System.out.println(String.valueOf(current.values[yv][xv]));
 							txtCellValue.setText(String.valueOf(current.values[yv][xv]));
 						}
+						else {
+							txtCellValue.setText("");
+						}
+					}
+					else {
+						txtCellValue.setText("");
 					}
 				}
 			}
@@ -200,17 +206,23 @@ public class UI extends JFrame {
 		rasterView.addMouseListener(new MouseAdapter() {
 			//@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("t");
+				//System.out.println("t");
 				int xv = e.getX()-MapPanel.x;
 				int yv = e.getY()-MapPanel.y;
-				System.out.println("X: "+xv+" Y: "+yv);
+				//System.out.println("X: "+xv+" Y: "+yv);
 				if(!hm.isEmpty()) {
 					Layer current = findSelected();
 					if(xv>=0 && xv<current.nRows) {
 						if(yv>=0 && yv<current.nCols) {
-							System.out.println(String.valueOf(current.values[xv][yv]));
+							//System.out.println(String.valueOf(current.values[xv][yv]));
 							txtCellValue.setText(String.valueOf(current.values[xv][yv]));
 						}
+						else {
+							consoleOutput.setText("Clicked outside layer");
+						}
+					}
+					else {
+						consoleOutput.setText("Clicked outside layer");
 					}
 				}
 			}
@@ -787,3 +799,17 @@ public class UI extends JFrame {
 			}
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
