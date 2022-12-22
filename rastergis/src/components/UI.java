@@ -1,4 +1,4 @@
-package se.kth.ag2411.mapalgebra;
+package components;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -734,8 +734,17 @@ public class UI extends JFrame {
 				putValue(SHORT_DESCRIPTION,"Save file"); 
 			}
 			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setDialogTitle("Specify a file to save");   
+
+				int userSelection = fileChooser.showSaveDialog(null);
+				
+				if (userSelection == JFileChooser.APPROVE_OPTION) {
 				Layer outputSave = findSelected();
-				outputSave.save("test.txt");
+				File fileToSave = fileChooser.getSelectedFile();
+				String fileName = fileToSave.getName();
+				outputSave.save(fileName+".txt");
+				}
 			}
 		}
 		
@@ -799,17 +808,3 @@ public class UI extends JFrame {
 			}
 		}
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
