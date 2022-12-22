@@ -415,7 +415,7 @@ import javax.swing.SpinnerNumberModel;
 			AbstractButton cb = b.nextElement();
 			if(cb.isSelected()) {
 				currentButton = (JToggleButton) cb;
-				System.out.println(currentButton.getLabel());
+				//System.out.println(currentButton.getLabel());
 				return currentButton.getLabel(); 
 			}
 		}

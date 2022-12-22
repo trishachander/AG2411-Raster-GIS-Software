@@ -1,4 +1,4 @@
-package se.kth.ag2411.mapalgebra;
+package components;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -29,6 +30,8 @@ import java.awt.Color;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.MouseInfo;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -142,6 +145,24 @@ public class UI extends JFrame {
 		view.setLayout(gbl_view);
 		
 		rasterView = new JPanel();
+		rasterView.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				int xv = (e.getX()-MapPanel.x)/currentZoom;
+				int yv = (e.getY()-MapPanel.y)/currentZoom;
+				
+				if(!hm.isEmpty()) {
+					Layer current = findSelected();
+					if(xv>=0 && xv<current.nRows) {
+						if(yv>=0 && yv<current.nCols) {
+							//System.out.println("X: "+xv+" Y: "+yv);
+							//System.out.println(String.valueOf(current.values[yv][xv]));
+							txtCellValue.setText(String.valueOf(current.values[yv][xv]));
+						}
+					}
+				}
+			}
+		});
 		rasterView.setBackground(new Color(255, 255, 255));
 		rasterView.addMouseWheelListener(new MouseWheelListener() {
 			public void mouseWheelMoved(MouseWheelEvent e) {
@@ -179,14 +200,16 @@ public class UI extends JFrame {
 		rasterView.addMouseListener(new MouseAdapter() {
 			//@Override
 			public void mouseClicked(MouseEvent e) {
-				int x = rasterView.getY();
-				int y = rasterView.getY();
+				System.out.println("t");
+				int xv = e.getX()-MapPanel.x;
+				int yv = e.getY()-MapPanel.y;
+				System.out.println("X: "+xv+" Y: "+yv);
 				if(!hm.isEmpty()) {
 					Layer current = findSelected();
-					if(x>=0 && x<current.nRows) {
-						if(y>=0 && y<current.nCols) {
-							System.out.println(String.valueOf(current.values[x][y]));
-							txtCellValue.setText(String.valueOf(current.values[x][y]));
+					if(xv>=0 && xv<current.nRows) {
+						if(yv>=0 && yv<current.nCols) {
+							System.out.println(String.valueOf(current.values[xv][yv]));
+							txtCellValue.setText(String.valueOf(current.values[xv][yv]));
 						}
 					}
 				}
@@ -754,28 +777,13 @@ public class UI extends JFrame {
 			
 			int r = fileSelect.showDialog(null,"Select a file"); 
 			if(r==JFileChooser.APPROVE_OPTION) {
-				
-				File selectedFile = fileSelect.getSelectedFile(); 
-				String filePath = selectedFile.getAbsolutePath(); 
-				String name = selectedFile.getName(); 
-				Layer raster = new Layer(name,filePath); 
-				return raster;
+					File selectedFile = fileSelect.getSelectedFile(); 
+					String filePath = selectedFile.getAbsolutePath(); 
+					String name = selectedFile.getName(); 
+					Layer raster = new Layer(name,filePath); 
+					return raster;
 			}else {
 				return null;
 			}
 		}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	}

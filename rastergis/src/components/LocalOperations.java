@@ -1,4 +1,4 @@
-package se.kth.ag2411.mapalgebra;
+package components;
 
 import java.awt.Color;
 import java.awt.EventQueue;

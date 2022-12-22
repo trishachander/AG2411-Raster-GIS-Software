@@ -1,6 +1,6 @@
-package se.kth.ag2411.mapalgebra;
+package components;
 
-	import java.awt.Color;
+import java.awt.Color;
 	import java.awt.EventQueue;
 
 	import javax.swing.JFrame;
@@ -234,7 +234,7 @@ package se.kth.ag2411.mapalgebra;
 							
 							case "Maximum":
 								if (raster1.nRows == raster2.nRows && raster1.nCols == raster2.nCols) {
-									result=raster1.zonalMaximum(raster2, "Min");	
+									result=raster1.zonalMinimum(raster2, "Min");	
 								
 									rdbtn = new JRadioButton("ZonalMax");
 									rdbtn.addActionListener(new ActionListener(){
@@ -354,4 +354,3 @@ package se.kth.ag2411.mapalgebra;
 		}
 
 	}
-

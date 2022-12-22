@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 
@@ -82,11 +84,11 @@ public class Layer {
 					bReader.close();
 			 						
 					} catch (Exception e) {
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(null,"Raster ASCII file is not formatted correctly.");
 					}
 		}			
 		else {
-			System.out.println("the file does not exist");
+			JOptionPane.showMessageDialog(null,"File does not exist.");
 		}
 	}
 	
