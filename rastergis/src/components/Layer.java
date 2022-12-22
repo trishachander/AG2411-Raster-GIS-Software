@@ -1,4 +1,4 @@
-package components;
+package se.kth.ag2411.mapalgebra;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -562,6 +562,52 @@ public class Layer {
 		return zoneOutPutLayer;
 	}
 	
+	public Layer zonalMaximum(Layer zoneLayer, String outLayerName) {
+		Layer zoneOutPutLayer = new Layer(name, nRows, nCols, origin,
+				resolution, nullValue);
+		HashMap<Double, Double> uniqueZone = new HashMap<>(); 
+		double zoneCount = 0;
+		for (int i = 0; i < nRows; i++) {
+			for (int j = 0; j < nCols; j++) {
+				if (uniqueZone.containsValue(zoneLayer.values[i][j]) == false) {
+					zoneCount = zoneCount + 1;
+					uniqueZone.put(zoneCount, zoneLayer.values[i][j]); 
+				}
+
+			}
+
+		}
+		
+		HashMap<Double, Double> minZone = new HashMap<>(); 
+		for (double z = 1; z <= zoneCount; z++) {
+			double maximum = Double.NEGATIVE_INFINITY;
+			for (int i = 0; i < nRows; i++) {
+				for (int j = 0; j < nCols; j++) {
+					if (zoneLayer.values[i][j] == uniqueZone.get(z)) { 
+						if (values[i][j] > maximum) {
+							maximum = values[i][j];
+						}
+					}
+				}
+			}
+			minZone.put(z, maximum); 
+		}
+		
+		for (double z = 1; z <= zoneCount; z++) {
+			for (int i = 0; i < nRows; i++) {
+				for (int j = 0; j < nCols; j++) {
+					if (zoneLayer.values[i][j] == uniqueZone.get(z)) {  
+						zoneOutPutLayer.values[i][j] = minZone.get(z);
+					}
+
+				}
+			}
+		}
+
+		return zoneOutPutLayer;
+	}
+	
+	
 	public Layer zonalMean(Layer zoneLayer, String outLayerName) {
 		Layer zoneOutPutLayer = new Layer(name, nRows, nCols, origin,
 				resolution, nullValue);
@@ -696,3 +742,9 @@ public class Layer {
 	
 	
 }
+
+
+
+
+		
+
