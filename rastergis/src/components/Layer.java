@@ -1,4 +1,4 @@
-package se.kth.ag2411.mapalgebra;
+package components;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,6 +84,7 @@ public class Layer {
 					bReader.close();
 			 						
 					} catch (Exception e) {
+						UI.checker=false; 
 						JOptionPane.showMessageDialog(null,"Raster ASCII file is not formatted correctly.");
 					}
 		}			
@@ -742,9 +743,3 @@ public class Layer {
 	
 	
 }
-
-
-
-
-		
-

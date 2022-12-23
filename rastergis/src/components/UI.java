@@ -1,4 +1,4 @@
-package se.kth.ag2411.mapalgebra;
+package components;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -77,6 +77,7 @@ public class UI extends JFrame {
 	private JTextField txtCellValue;
 	static JScrollBar scrollBarVertical;
 	static JScrollBar scrollBarHorizontal;
+	static boolean checker = true;
 
 
 
@@ -103,7 +104,6 @@ public class UI extends JFrame {
 		//
 		// INITIALIZE WINDOW 
 		// 
-		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\milton\\Downloads\\enzyme.png"));
 		setTitle("kevlarGIS");
 		setDefaultCloseOperation(UI.EXIT_ON_CLOSE);
 		setBounds(100, 100, 774, 531);
@@ -426,30 +426,6 @@ public class UI extends JFrame {
 				}
 			}
 		});
-				/*try {	
-					double n1 = Double.parseDouble(text1);
-					double n2 = Double.parseDouble(text2);
-					double n3 = Double.parseDouble(text3);
-					
-					double[] vois = new double[3];
-					vois[0]=n1;
-					vois[1]=n2;
-					vois[2]=n3;
-					
-					RGB(findSelected(),(double)currentZoom,vois);
-				} catch (NumberFormatException nfe) {
-					if (text1.length() > 0 && text2.length() > 0 && text3.length() > 0) {
-						consoleOutput.setText("Inputs need to be numbers");
-					}
-					else {
-						consoleOutput.setText("Three values needed");
-						}
-					}
-				}
-				else
-					consoleOutput.setText("No layers");
-			}
-		});*/
 		
 		JLabel lblColorSettings = new JLabel("Color Settings:");
 		lblColorSettings.setFont(new Font("Tahoma", Font.BOLD, 10));
@@ -488,14 +464,6 @@ public class UI extends JFrame {
 		gbc_btnRGB.gridy = 0;
 		interactivePanel.add(btnRGB, gbc_btnRGB);
 		
-		JLabel label = new JLabel("");
-		GridBagConstraints gbc_label = new GridBagConstraints();
-		gbc_label.fill = GridBagConstraints.BOTH;
-		gbc_label.insets = new Insets(0, 0, 5, 5);
-		gbc_label.gridx = 3;
-		gbc_label.gridy = 0;
-		interactivePanel.add(label, gbc_label);
-		
 		JLabel lblVOIS = new JLabel("VOIS:");
 		lblVOIS.setFont(new Font("Tahoma", Font.BOLD, 10));
 		GridBagConstraints gbc_lblVOIS = new GridBagConstraints();
@@ -514,14 +482,6 @@ public class UI extends JFrame {
 		gbc_txtFR.gridx = 1;
 		gbc_txtFR.gridy = 1;
 		interactivePanel.add(txtFR, gbc_txtFR);
-		
-		JLabel label_1 = new JLabel("");
-		GridBagConstraints gbc_label_1 = new GridBagConstraints();
-		gbc_label_1.fill = GridBagConstraints.BOTH;
-		gbc_label_1.insets = new Insets(0, 0, 5, 5);
-		gbc_label_1.gridx = 2;
-		gbc_label_1.gridy = 1;
-		interactivePanel.add(label_1, gbc_label_1);
 		
 		JLabel lblCellValue = new JLabel("Cell Value:");
 		lblCellValue.setFont(new Font("Tahoma", Font.BOLD, 10));
@@ -607,9 +567,6 @@ public class UI extends JFrame {
 		fileMenu.add(mntmSave);
 		
 		//Create "About" Menu 
-//		JMenu aboutMenu = new JMenu("About");
-//		menuBar.add(aboutMenu);
-		
 		JMenu helpMenu = new JMenu("Help");
 		menuBar.add(helpMenu);
 		JMenuItem webHelp = new JMenuItem("Web Help");
@@ -632,7 +589,6 @@ public class UI extends JFrame {
 				//Create and apply an extension filter as to only accept txt files 
 				FileNameExtensionFilter fileFilter = new FileNameExtensionFilter("ASCII Raster Files (.txt)","txt"); 
 				fileSelect.addChoosableFileFilter(fileFilter);
-				
 				int r = fileSelect.showDialog(null,"Select a file"); 
 				if(r==JFileChooser.APPROVE_OPTION) {
 					
@@ -640,31 +596,35 @@ public class UI extends JFrame {
 					String filePath = selectedFile.getAbsolutePath(); 
 					String name = selectedFile.getName(); 
 					Layer raster = new Layer(name,filePath); 
-					greyScale(raster,currentZoom);	
 					
-					String[] newName = name.split("[.]"); // Very ugly solution but I cant be bothered
-					name = newName[0].toString(); 
-					
-					if(name.length()>12) {
-						name = name.substring(0,12); 
-					}
-					JRadioButton rdbtn = new JRadioButton(name);
-					rdbtn.addActionListener(new ActionListener(){
-						public void actionPerformed(ActionEvent e) {
-							Layer current = hm.get(rdbtn); 
-							greyScale(current,currentZoom); 
-						}
-					});
+					if(checker==true) {
+						greyScale(raster,currentZoom);	
 						
-					GridBagConstraints gbc_rdbtn = new GridBagConstraints();
-					gbc_rdbtn.gridx = 0;
-					gbc_rdbtn.gridy = hm.size()+1;
-					btnGroupToc.add(rdbtn);
-					rdbtn.setBackground(Color.white);
-					tocBar.add(rdbtn,gbc_rdbtn);
-					hm.put(rdbtn, raster); 
-					rdbtn.setSelected(true);
+						String[] newName = name.split("[.]"); // Very ugly solution but I cant be bothered
+						name = newName[0].toString(); 
+						
+						if(name.length()>12) {
+							name = name.substring(0,12); 
+						}
+						JRadioButton rdbtn = new JRadioButton(name);
+						rdbtn.addActionListener(new ActionListener(){
+							public void actionPerformed(ActionEvent e) {
+								Layer current = hm.get(rdbtn); 
+								greyScale(current,currentZoom); 
+							}
+						});
+							
+						GridBagConstraints gbc_rdbtn = new GridBagConstraints();
+						gbc_rdbtn.gridx = 0;
+						gbc_rdbtn.gridy = hm.size()+1;
+						btnGroupToc.add(rdbtn);
+						rdbtn.setBackground(Color.white);
+						tocBar.add(rdbtn,gbc_rdbtn);
+						hm.put(rdbtn, raster); 
+						rdbtn.setSelected(true);
+					}
 					
+					checker = true;
 				}
 			}
 		}
@@ -698,7 +658,7 @@ public class UI extends JFrame {
 
 	            } catch (URISyntaxException e1) {
 	                // TODO Add dialog saying something is wrong
-	                e1.printStackTrace();
+	                
 	            }
 			}
 				
@@ -710,8 +670,21 @@ public class UI extends JFrame {
 				putValue(SHORT_DESCRIPTION,"Save file"); 
 			}
 			public void actionPerformed(ActionEvent e) {
-				Layer outputSave = findSelected();
-				outputSave.save("test.txt");
+				if(hm.size()>0) {
+					JFileChooser fileChooser = new JFileChooser();
+					fileChooser.setDialogTitle("Specify a file to save");   
+
+					int userSelection = fileChooser.showSaveDialog(null);
+					
+					if (userSelection == JFileChooser.APPROVE_OPTION) {
+					Layer outputSave = findSelected();
+					File fileToSave = fileChooser.getSelectedFile();
+					outputSave.save(fileToSave.getAbsolutePath()+".txt");
+					}
+				}
+				else {
+					JOptionPane.showMessageDialog(null,"You can't save an empty layer");
+				}
 			}
 		}
 		
@@ -744,7 +717,7 @@ public class UI extends JFrame {
 		
 		private Layer findSelected() {
 			JRadioButton currentButton = null; 
-			//This code was found on stack overflow https://stackoverflow.com/questions/201287/how-do-i-get-which-jradiobutton-is-selected-from-a-buttongroup/13232816#13232816
+			//This code was adapted from following stack overflow https://stackoverflow.com/questions/201287/how-do-i-get-which-jradiobutton-is-selected-from-a-buttongroup/13232816#13232816
 			for(Enumeration<AbstractButton> b = btnGroupToc.getElements(); b.hasMoreElements();) {
 				AbstractButton cb = b.nextElement();
 				if(cb.isSelected()) {
@@ -775,17 +748,3 @@ public class UI extends JFrame {
 			}
 		}
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
