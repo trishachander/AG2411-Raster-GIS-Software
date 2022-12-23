@@ -1,4 +1,4 @@
-package components;
+package se.kth.ag2411.mapalgebra;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -201,30 +201,6 @@ public class UI extends JFrame {
 					}
 				}
 
-			}
-		});
-		rasterView.addMouseListener(new MouseAdapter() {
-			//@Override
-			public void mouseClicked(MouseEvent e) {
-				//System.out.println("t");
-				int xv = e.getX()-MapPanel.x;
-				int yv = e.getY()-MapPanel.y;
-				//System.out.println("X: "+xv+" Y: "+yv);
-				if(!hm.isEmpty()) {
-					Layer current = findSelected();
-					if(xv>=0 && xv<current.nRows) {
-						if(yv>=0 && yv<current.nCols) {
-							//System.out.println(String.valueOf(current.values[xv][yv]));
-							txtCellValue.setText(String.valueOf(current.values[xv][yv]));
-						}
-						else {
-							consoleOutput.setText("Clicked outside layer");
-						}
-					}
-					else {
-						consoleOutput.setText("Clicked outside layer");
-					}
-				}
 			}
 		});
 		x = rasterView.getWidth();
@@ -734,17 +710,8 @@ public class UI extends JFrame {
 				putValue(SHORT_DESCRIPTION,"Save file"); 
 			}
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setDialogTitle("Specify a file to save");   
-
-				int userSelection = fileChooser.showSaveDialog(null);
-				
-				if (userSelection == JFileChooser.APPROVE_OPTION) {
 				Layer outputSave = findSelected();
-				File fileToSave = fileChooser.getSelectedFile();
-				String fileName = fileToSave.getName();
-				outputSave.save(fileName+".txt");
-				}
+				outputSave.save("test.txt");
 			}
 		}
 		
@@ -808,3 +775,17 @@ public class UI extends JFrame {
 			}
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
